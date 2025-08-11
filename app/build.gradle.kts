@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.bignerdranch.android.playlistmaker"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.bignerdranch.android.playlistmaker"
