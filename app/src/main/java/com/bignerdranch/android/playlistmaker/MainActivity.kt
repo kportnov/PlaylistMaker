@@ -28,5 +28,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, MediaLibraryActivity::class.java)
             startActivity(intent)
         }
+
+        val intent = Intent()
     }
 }

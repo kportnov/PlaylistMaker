@@ -9,4 +9,9 @@
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="media_library">МЕДИАТЕКА</string>
     <string name="search">SEARCH</string>
+    <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="myEmail">irbis2496@ya.ru</string>
+    <string name="https_practicum_yandex_ru_android_developer">https://practicum.yandex.ru/android-developer/</string>
+    <string name="https_yandex_ru_legal_practicum_offer_ru">https://yandex.ru/legal/practicum_offer/ru/</string>
 </resources>
