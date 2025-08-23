@@ -12,12 +12,9 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="@dimen/button_size_48"
-            android:layout_height="@dimen/button_size_48"
-            android:layout_margin="4dp"
-            app:iconPadding="0dp"
+            android:id="@+id/button_back"
             app:icon="@drawable/ic_back_arrow_48"
-            style="@style/ButtonBackArrowStyle"/>
+            style="@style/ButtonBackNavigationStyle"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -5,29 +5,53 @@
     <style name="TitleTextStyle">
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">@dimen/text_size</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item></style>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
     <style name="SettingsTextStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
+
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textSize">@dimen/text_size</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/YP_black</item>
         <item name="android:textAllCaps">false</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">8dp</item>
-        <item name="iconTint">@color/black</item>
+        <item name="iconTint">@color/YP_black</item>
         <item name="cornerRadius">@dimen/corner_radius</item>
         <item name="fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
     </style>
-    <style name="ButtonBackArrowStyle">
+
+    <style name="ButtonBackNavigationStyle">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_margin">4dp</item>
         <item name="android:background">@android:color/transparent</item>
+        <item name="iconPadding">0dp</item>
         <item name="iconGravity">textStart</item>
         <item name="iconTint">@color/white</item>
+    </style>
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:minHeight">36dp</item>
+        <item name="android:font">@font/ys_display_regular</item>
+        <item name="android:textColorHint">@color/YP_black</item>
+        <item name="android:textColor">@color/YP_black</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">16sp</item>
+        <item name="cursorColor">@color/YP_blue</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:drawableTint">@color/YP_black</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:background">@drawable/edit_text_shape</item>
+        <item name="android:backgroundTint">@color/white</item>
     </style>
 </resources>
