@@ -3,6 +3,13 @@
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary brand color. -->
+        <item name="android:textColor">@color/YP_black</item>
+        <item name="iconTint">@color/YP_black</item>
+        <!-- Customize your theme here. -->
+    </style>
+    <style name="Base.Theme.PlaylistMaker.MainScreen" parent="Base.Theme.PlaylistMaker">
+        <item name="android:background">@color/YP_blue</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
