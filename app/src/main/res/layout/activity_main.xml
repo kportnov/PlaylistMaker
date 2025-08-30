@@ -12,6 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:paddingHorizontal="@dimen/standart_lateral"
             android:paddingVertical="@dimen/standart_lateral"
             android:text="@string/app_name"
@@ -29,21 +30,30 @@
 
         <Button
             android:id="@+id/button_search"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/search"
             app:icon="@drawable/ic_search_24"
-            style="@style/ButtonStyle" />
+            style="@style/ButtonMainScreenStyle" />
 
         <Button
             android:id="@+id/button_media_library"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/media_room"
             app:icon="@drawable/ic_media_library_24"
-            style="@style/ButtonStyle" />
+            style="@style/ButtonMainScreenStyle" />
 
         <Button
             android:id="@+id/button_settings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/settings"
             app:icon="@drawable/ic_settings_24"
-            style="@style/ButtonStyle"/>
+            style="@style/ButtonMainScreenStyle"/>
 
 
     </LinearLayout>

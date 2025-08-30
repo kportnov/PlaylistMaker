@@ -3,9 +3,6 @@ package com.bignerdranch.android.playlistmaker
 import android.content.Context
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -14,6 +11,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 
 class SearchActivity : AppCompatActivity() {
 
@@ -34,22 +33,11 @@ class SearchActivity : AppCompatActivity() {
         val imageViewClear = findViewById<ImageView>(R.id.clearIcon)
         val buttonBack = findViewById<Button>(R.id.button_back)
 
-        val textWatcherSearch = object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                imageViewClear.visibility = clearButtonVisibility(p0)
-                editTextValue = p0.toString()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
+        editTextSearch.doOnTextChanged { text, _, _, _ ->
+            imageViewClear.isVisible = !text.isNullOrEmpty()
+            editTextValue = text.toString()
         }
 
-        editTextSearch.addTextChangedListener(textWatcherSearch)
         editTextSearch.setText(editTextValue)
 
         imageViewClear.setOnClickListener {
@@ -60,13 +48,6 @@ class SearchActivity : AppCompatActivity() {
         buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-    }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         outState.putString(EDIT_TEXT, editTextValue)

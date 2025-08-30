@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
-import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,12 +21,12 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val flShareTheApp = findViewById<FrameLayout>(R.id.fl_share_the_app)
-        val flSendToSupport = findViewById<FrameLayout>(R.id.fl_send_to_support)
-        val flUserAgreement = findViewById<FrameLayout>(R.id.fl_user_agreement)
+        val btnShareTheApp = findViewById<Button>(R.id.btn_share_the_app)
+        val btnSendToSupport = findViewById<Button>(R.id.btn_sent_to_support)
+        val btnUserAgreement = findViewById<Button>(R.id.btn_user_agreement)
         val buttonBack = findViewById<Button>(R.id.button_back)
 
-        flShareTheApp.setOnClickListener {
+        btnShareTheApp.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT,
@@ -35,7 +34,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, getString(R.string.share_via)))
         }
 
-        flSendToSupport.setOnClickListener {
+        btnSendToSupport.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:")
             intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.myEmail)))
@@ -44,7 +43,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        flUserAgreement.setOnClickListener {
+        btnUserAgreement.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(getString(R.string.https_yandex_ru_legal_practicum_offer_ru))
             startActivity(intent)
