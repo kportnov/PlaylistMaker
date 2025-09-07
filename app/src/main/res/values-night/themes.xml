@@ -4,7 +4,6 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:textColor">@color/white</item>
-        <item name="tint">@color/white</item>
         <item name="android:background">@color/YP_black</item>
     </style>
     <style name="Base.Theme.PlaylistMaker.MainScreen" parent="Base.Theme.PlaylistMaker">
