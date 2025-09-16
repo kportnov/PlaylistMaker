@@ -13,12 +13,16 @@
 
         <Button
             android:id="@+id/button_back"
+            android:layout_width="@dimen/back_button_size"
+            android:layout_height="@dimen/back_button_size"
+            android:layout_margin="4dp"
             app:icon="@drawable/ic_back_arrow_48"
             style="@style/ButtonBackNavigationStyle"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_margin="4dp"
             android:text="@string/settings"
             style="@style/TitleTextStyle" />
@@ -30,86 +34,35 @@
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/fl_dark_theme"
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="@dimen/padding_settings"
-            android:paddingStart="@dimen/standart_lateral"
-            android:paddingEnd="@dimen/standart_lateral">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/dark_theme"
-                style="@style/SettingsTextStyle"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                android:layout_gravity="end" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/fl_share_the_app"
+            style="@style/ButtonSettingsActivityStyle"
+            android:text="@string/dark_theme">
+        </com.google.android.material.switchmaterial.SwitchMaterial>
+        <Button
+            android:id="@+id/btn_share_the_app"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="21dp"
-            android:paddingStart="@dimen/standart_lateral"
-            android:paddingEnd="@dimen/standart_lateral">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/share_the_app"
-                style="@style/SettingsTextStyle"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_share_24"/>
-        </FrameLayout>
-        <FrameLayout
-            android:id="@+id/fl_send_to_support"
+            android:text="@string/share_the_app"
+            app:drawableEndCompat="@drawable/ic_share_24"
+            style="@style/ButtonSettingsActivityStyle">
+        </Button>
+        <Button
+            android:id="@+id/btn_sent_to_support"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/standart_lateral"
-            android:paddingEnd="@dimen/standart_lateral"
-            android:paddingVertical="@dimen/padding_settings">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/send_to_support"
-                style="@style/SettingsTextStyle"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_support_24"/>
-        </FrameLayout>
-        <FrameLayout
-            android:id="@+id/fl_user_agreement"
-            android:clickable="true"
+            android:text="@string/send_to_support"
+            app:drawableEndCompat="@drawable/ic_support_24"
+            style="@style/ButtonSettingsActivityStyle">
+        </Button>
+        <Button
+            android:id="@+id/btn_user_agreement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/standart_lateral"
-            android:paddingEnd="@dimen/standart_lateral"
-            android:paddingVertical="@dimen/padding_settings">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/user_agreement"
-                style="@style/SettingsTextStyle"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_arrow_forward_24"/>
-        </FrameLayout>
+            android:text="@string/user_agreement"
+            app:drawableEndCompat="@drawable/ic_arrow_forward_24"
+            style="@style/ButtonSettingsActivityStyle">
+        </Button>
     </LinearLayout>
 </LinearLayout>
