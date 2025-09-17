@@ -19,8 +19,10 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bind(track: Track) {
         trackName.text = track.trackName
         trackArtist.text = track.artistName
-        trackDuration.text = track.trackTime
+        if (track.trackTime != null) {
+            trackDuration.text = Converter.longToMMSS(track.trackTime.toLong())
 
+        }
         Glide.with(itemView)
             .load(track.artworkUrl)
             .placeholder(R.drawable.img_placeholder)
