@@ -22,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginHorizontal="8dp">
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="30dp">
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -46,6 +47,7 @@
                     android:id="@+id/track_artist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     style="@style/SongArtistSearchStyle"
                     tools:text="The Beatles"
                     app:drawableEndCompat="@drawable/ic_dot" />
@@ -53,6 +55,7 @@
                     android:id="@+id/track_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     style="@style/SongArtistSearchStyle"
                     tools:text="2:55" />
             </LinearLayout>
@@ -60,7 +63,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/button_back"
+        android:id="@+id/button_forward"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
