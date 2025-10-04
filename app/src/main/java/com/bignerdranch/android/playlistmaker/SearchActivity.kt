@@ -1,17 +1,21 @@
 package com.bignerdranch.android.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -23,6 +27,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+const val SHARED_PREFERENCES_SEARCH= "preferences_search"
+const val SEARCH_HISTORY_KEY = "key_for_history_key"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -39,23 +46,35 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ITunesSearchAPI::class.java)
 
     private val tracks = mutableListOf<Track>()
-    private val adapter = TrackAdapter(tracks)
+    private val adapter = TrackAdapter(tracks, this)
+
+    private val trackHistory = mutableListOf<Track>()
+    private val trackHistoryAdapter = TrackAdapter(trackHistory, this)
 
     private lateinit var editTextSearch: EditText
     private lateinit var buttonBack: Button
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewHistory: RecyclerView
+    private lateinit var viewGroupError: LinearLayout
+    private lateinit var viewGroupSearchHistory: ConstraintLayout
 
     private lateinit var imageError: ImageView
     private lateinit var textViewError: TextView
     private lateinit var buttonUpdate: Button
 
+    private lateinit var buttonClearHistory: Button
+
     private lateinit var lastRequest: String
+    private val layoutHandler = ViewGroupHandler()
+
+    private lateinit var sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
+
 
         if (savedInstanceState != null) {
             editTextValue = savedInstanceState.getString(EDIT_TEXT, EDIT_TEXT_INPUT)
@@ -68,25 +87,60 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_SEARCH, MODE_PRIVATE)
+        val searchHistory = SearchHistory(sharedPreferences)
+        trackHistory.addAll(searchHistory.readSharedPreferences())
+
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         val imageViewClear = findViewById<ImageView>(R.id.clearIcon)
         buttonBack = findViewById(R.id.button_back)
         editTextSearch = findViewById(R.id.edit_text_search)
 
+
+        viewGroupError = findViewById(R.id.viewGroupError)
+        viewGroupSearchHistory = findViewById(R.id.viewGroupSearchHistory)
         imageError = findViewById(R.id.imageViewError)
         textViewError = findViewById(R.id.textViewError)
         buttonUpdate = findViewById(R.id.btn_update)
+        buttonClearHistory = findViewById(R.id.btn_clear_history)
 
         recyclerView = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
         recyclerView.adapter = adapter
 
-        manageErrorElements(getErrorTypeBySTATE())
+        recyclerViewHistory = findViewById(R.id.recycler_search_history)
+        recyclerViewHistory.layoutManager = LinearLayoutManager(this)
+        recyclerViewHistory.adapter = trackHistoryAdapter
+
+
+
+
+        sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == SEARCH_HISTORY_KEY) {
+                trackHistory.clear()
+                trackHistory.addAll(searchHistory.readSharedPreferences())
+                for (track in trackHistory) {
+                    Log.i("MYTEST", track.trackName)
+                }
+                trackHistoryAdapter.notifyDataSetChanged()
+            }
+        }
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
+
+        layoutHandler.manageLayout()
 
         editTextSearch.doOnTextChanged { text, _, _, _ ->
             imageViewClear.isVisible = !text.isNullOrEmpty()
             editTextValue = text.toString()
+
+            if (editTextSearch.hasFocus() && text?.isEmpty() == true) {
+                layoutHandler.setLayout(ViewGroupAdditional.SEARCH_HISTORY)
+            } else {
+                if (!layoutHandler.isError()) {
+                    layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
+                }
+            }
         }
 
         editTextSearch.setText(editTextValue)
@@ -99,14 +153,32 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-        buttonUpdate.setOnClickListener { search(true) }
+        editTextSearch.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && editTextSearch.text.isEmpty()) {
+                layoutHandler.setLayout(ViewGroupAdditional.SEARCH_HISTORY)
+            } else {
+                if (!layoutHandler.isError()) {
+                    layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
+                }
+            }
+        }
+
+        buttonUpdate.setOnClickListener {
+            Log.i("MYTEST", "Update clicked")
+            search(true)
+        }
 
         imageViewClear.setOnClickListener {
             editTextSearch.text.clear()
             tracks.clear()
             adapter.notifyDataSetChanged()
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
-            manageErrorElements(ErrorType.NO_ERROR)
+            layoutHandler.setLayout(ViewGroupAdditional.SEARCH_HISTORY)
+        }
+
+        buttonClearHistory.setOnClickListener {
+            searchHistory.clearHistoryList()
+            layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
         }
 
         buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
@@ -120,7 +192,7 @@ class SearchActivity : AppCompatActivity() {
             lastRequest = editTextSearch.text.toString()
             lastRequest
         }
-
+        Log.i("MYTEST", "UPD CLICKED")
         if (request.isNotEmpty()) {
             iTunesService.search(request)
                 .enqueue(object : Callback<TrackResponse> {
@@ -128,71 +200,38 @@ class SearchActivity : AppCompatActivity() {
                         call: Call<TrackResponse>,
                         response: Response<TrackResponse>
                     ) {
+                        Log.i("MYTEST", "RESPONSE CODE = ${response.code()}")
                         if (response.code() == 200) {
                             if (response.body()?.tracks!!.isNotEmpty()) {
                                 tracks.clear()
                                 tracks.addAll(response.body()?.tracks!!)
                                 adapter.notifyDataSetChanged()
-                                manageErrorElements(ErrorType.NO_ERROR)
+                                layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
                             } else {
-                                manageErrorElements(ErrorType.NOTHING_FOUND)
+                                layoutHandler.setLayout(ViewGroupAdditional.NOTHING_FOUND)
                             }
                         } else {
-                            manageErrorElements(ErrorType.CONNECTION_FAILURE)
+                            layoutHandler.setLayout(ViewGroupAdditional.CONNECTION_FAILURE)
                         }
                     }
 
                     override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                        manageErrorElements(ErrorType.CONNECTION_FAILURE)
+                        layoutHandler.setLayout(ViewGroupAdditional.CONNECTION_FAILURE)
                     }
 
                 })
         }
     }
 
-    private fun getErrorTypeBySTATE(): ErrorType {
-        return when (state) {
-            1 -> ErrorType.NOTHING_FOUND
-            2 -> ErrorType.CONNECTION_FAILURE
-            else -> ErrorType.NO_ERROR
-        }
-    }
 
-    private fun manageErrorElements(errorType: ErrorType) {
-        when (errorType) {
-            ErrorType.NO_ERROR -> {
-                state = 0
-                imageError.visibility = View.GONE
-                textViewError.visibility = View.GONE
-                buttonUpdate.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
-            ErrorType.NOTHING_FOUND -> {
-                state = 1
-                imageError.visibility = View.VISIBLE
-                textViewError.visibility = View.VISIBLE
-                buttonUpdate.visibility = View.GONE
-                recyclerView.visibility = View.GONE
-                textViewError.text = resources.getText(R.string.nothing_found)
-                imageError.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.img_nothing_found))
-            }
-            ErrorType.CONNECTION_FAILURE -> {
-                state = 2
-                imageError.visibility = View.VISIBLE
-                textViewError.visibility = View.VISIBLE
-                buttonUpdate.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
-                textViewError.text = resources.getText(R.string.connection_problems)
-                imageError.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.img_connection_failure))
-            }
-        }
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EDIT_TEXT, editTextValue)
         outState.putInt(STATE_CONDITION, state)
     }
+
+
 
     companion object {
         const val EDIT_TEXT = "EDIT_TEXT"
@@ -201,9 +240,88 @@ class SearchActivity : AppCompatActivity() {
         const val STATE_CONDITION = "STATE"
     }
 
-    private enum class ErrorType {
+    private enum class ViewGroupAdditional {
+        NORMAL,
+        SEARCH_HISTORY,
         CONNECTION_FAILURE,
         NOTHING_FOUND,
-        NO_ERROR
+    }
+
+    private inner class ViewGroupHandler {
+
+        fun setLayout(viewGroup: ViewGroupAdditional) {
+
+            state = when (viewGroup) {
+                ViewGroupAdditional.NORMAL -> 0
+                ViewGroupAdditional.SEARCH_HISTORY -> 1
+                ViewGroupAdditional.NOTHING_FOUND -> 2
+                ViewGroupAdditional.CONNECTION_FAILURE -> 3
+            }
+            manageLayout()
+        }
+
+        private fun getViewGroupByState(): ViewGroupAdditional {
+            return when (state) {
+                0 -> ViewGroupAdditional.NORMAL
+                1 -> ViewGroupAdditional.SEARCH_HISTORY
+                2 -> ViewGroupAdditional.NOTHING_FOUND
+                else -> ViewGroupAdditional.CONNECTION_FAILURE
+            }
+        }
+
+
+        fun manageLayout() {
+
+            when (getViewGroupByState()) {
+                ViewGroupAdditional.NORMAL -> {
+                    viewGroupError.visibility = View.GONE
+                    viewGroupSearchHistory.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                }
+
+                ViewGroupAdditional.SEARCH_HISTORY -> {
+                    if (trackHistory.isNotEmpty()) {
+                        viewGroupError.visibility = View.GONE
+                        viewGroupSearchHistory.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    }
+                }
+
+                ViewGroupAdditional.NOTHING_FOUND -> {
+                    viewGroupError.visibility = View.VISIBLE
+                    viewGroupSearchHistory.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
+
+                    buttonUpdate.visibility = View.GONE
+
+                    textViewError.text = resources.getText(R.string.nothing_found)
+                    imageError.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            this@SearchActivity,
+                            R.drawable.img_nothing_found
+                        )
+                    )
+                }
+
+                ViewGroupAdditional.CONNECTION_FAILURE -> {
+                    viewGroupError.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                    viewGroupSearchHistory.visibility = View.GONE
+
+                    textViewError.text = resources.getText(R.string.connection_problems)
+                    imageError.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            this@SearchActivity,
+                            R.drawable.img_connection_failure
+                        )
+                    )
+                }
+            }
+        }
+
+        fun isError(): Boolean {
+            return getViewGroupByState() == ViewGroupAdditional.CONNECTION_FAILURE ||
+                    getViewGroupByState() == ViewGroupAdditional.CONNECTION_FAILURE
+        }
     }
 }
