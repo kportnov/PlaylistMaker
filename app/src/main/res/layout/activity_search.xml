@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/activity_settings">
 
     <LinearLayout
-        android:id="@+id/layout_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -60,17 +58,21 @@
             app:tint="@color/YP_black"
             app:backgroundTint="@android:color/transparent"/>
 
-
     </FrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
-
     </androidx.recyclerview.widget.RecyclerView>
 
-    <LinearLayout
+    <include layout="@layout/activity_search_history" />
+    <include layout="@layout/activity_search_error"/>
+
+
+
+<!--    <LinearLayout
         android:id="@+id/layoutErrorGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -106,7 +108,7 @@
             android:visibility="gone"
             android:text="@string/update" />
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 
 

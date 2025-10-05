@@ -1,5 +1,6 @@
 package com.bignerdranch.android.playlistmaker
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +33,8 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class TrackAdapter(private val trackList: MutableList<Track>): RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val trackList: MutableList<Track>, private val context: Context): RecyclerView.Adapter<TrackViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycle_search_card, parent, false)
         return TrackViewHolder(view)
@@ -43,6 +45,11 @@ class TrackAdapter(private val trackList: MutableList<Track>): RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+        val searchHistory = SearchHistory(context.getSharedPreferences(SHARED_PREFERENCES_SEARCH, 0))
+
         holder.bind(trackList[position])
+        holder.itemView.setOnClickListener {
+            searchHistory.addToHistoryList(trackList[position])
+        }
     }
 }

@@ -8,8 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
+
+const val SHARED_PREFERENCES_SETTINGS = "preferences_settings"
+const val NIGHT_MODE_KEY = "key_for_night_mode"
 
 class SettingsActivity : AppCompatActivity() {
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,10 +27,24 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_SETTINGS, MODE_PRIVATE)
+
+
+        val switchTheme = findViewById<SwitchMaterial>(R.id.themeSwitcher)
         val btnShareTheApp = findViewById<Button>(R.id.btn_share_the_app)
         val btnSendToSupport = findViewById<Button>(R.id.btn_sent_to_support)
         val btnUserAgreement = findViewById<Button>(R.id.btn_user_agreement)
         val buttonBack = findViewById<Button>(R.id.button_back)
+
+        switchTheme.isChecked = sharedPreferences.getBoolean(NIGHT_MODE_KEY, false)
+        
+        switchTheme.setOnCheckedChangeListener { switcher, checked ->
+            sharedPreferences.edit()
+                .putBoolean(NIGHT_MODE_KEY ,checked)
+                .apply()
+
+            (applicationContext as App).switchTheme(checked)
+        }
 
         btnShareTheApp.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
