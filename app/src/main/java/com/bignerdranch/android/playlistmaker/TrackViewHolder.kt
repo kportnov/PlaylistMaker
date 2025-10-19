@@ -51,10 +51,10 @@ class TrackAdapter(private val trackList: MutableList<Track>, private val contex
 
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener {
-            searchHistory.addToHistoryList(trackList[position])
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra(KEY_PLAYER_ACTIVITY, Gson().toJson(trackList[position]))
             context.startActivity(intent)
+            searchHistory.addToHistoryList(trackList[position])
         }
     }
 }
