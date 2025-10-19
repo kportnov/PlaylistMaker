@@ -14,8 +14,18 @@ class Converter {
                 context.resources.displayMetrics).toInt()
         }
 
-        fun longToMMSS(value: Long): String {
-            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(value)
+        fun longToMMSS(value: String?): String? {
+            return if (!value.isNullOrEmpty()) {
+                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(value.toLong())
+            } else null
+        }
+
+        fun dateToYear(value: String?): String? {
+            return value?.take(4)
+        }
+
+        fun getCoverArtwork(artworkUrl100: String?): String? {
+           return artworkUrl100?.replaceAfterLast('/',"512x512bb.jpg")
         }
     }
 }
