@@ -3,12 +3,12 @@ package com.bignerdranch.android.playlistmaker
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -52,7 +52,7 @@ class SearchActivity : AppCompatActivity() {
     private val trackHistoryAdapter = TrackAdapter(trackHistory, this)
 
     private lateinit var editTextSearch: EditText
-    private lateinit var buttonBack: Button
+    private lateinit var buttonBack: ImageButton
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewHistory: RecyclerView
@@ -96,7 +96,6 @@ class SearchActivity : AppCompatActivity() {
         buttonBack = findViewById(R.id.button_back)
         editTextSearch = findViewById(R.id.edit_text_search)
 
-
         viewGroupError = findViewById(R.id.viewGroupError)
         viewGroupSearchHistory = findViewById(R.id.viewGroupSearchHistory)
         imageError = findViewById(R.id.imageViewError)
@@ -113,15 +112,10 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewHistory.adapter = trackHistoryAdapter
 
 
-
-
         sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == SEARCH_HISTORY_KEY) {
                 trackHistory.clear()
                 trackHistory.addAll(searchHistory.readSharedPreferences())
-                for (track in trackHistory) {
-                    Log.i("MYTEST", track.trackName)
-                }
                 trackHistoryAdapter.notifyDataSetChanged()
             }
         }
@@ -164,7 +158,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         buttonUpdate.setOnClickListener {
-            Log.i("MYTEST", "Update clicked")
             search(true)
         }
 
@@ -192,7 +185,6 @@ class SearchActivity : AppCompatActivity() {
             lastRequest = editTextSearch.text.toString()
             lastRequest
         }
-        Log.i("MYTEST", "UPD CLICKED")
         if (request.isNotEmpty()) {
             iTunesService.search(request)
                 .enqueue(object : Callback<TrackResponse> {
@@ -200,7 +192,6 @@ class SearchActivity : AppCompatActivity() {
                         call: Call<TrackResponse>,
                         response: Response<TrackResponse>
                     ) {
-                        Log.i("MYTEST", "RESPONSE CODE = ${response.code()}")
                         if (response.code() == 200) {
                             if (response.body()?.tracks!!.isNotEmpty()) {
                                 tracks.clear()

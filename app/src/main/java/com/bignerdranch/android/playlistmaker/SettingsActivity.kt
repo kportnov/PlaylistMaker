@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -34,7 +35,7 @@ class SettingsActivity : AppCompatActivity() {
         val btnShareTheApp = findViewById<Button>(R.id.btn_share_the_app)
         val btnSendToSupport = findViewById<Button>(R.id.btn_sent_to_support)
         val btnUserAgreement = findViewById<Button>(R.id.btn_user_agreement)
-        val buttonBack = findViewById<Button>(R.id.button_back)
+        val buttonBack = findViewById<ImageButton>(R.id.button_back)
 
         switchTheme.isChecked = sharedPreferences.getBoolean(NIGHT_MODE_KEY, false)
         
