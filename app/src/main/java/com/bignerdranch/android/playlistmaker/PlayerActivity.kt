@@ -1,15 +1,17 @@
 package com.bignerdranch.android.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.view.View
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
@@ -17,6 +19,22 @@ import com.google.gson.Gson
 const val KEY_PLAYER_ACTIVITY = "key player activity"
 
 class PlayerActivity : AppCompatActivity() {
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val REFRESH_TIME_DELAY_MILLIS = 300L
+
+    }
+
+    private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private var mainThreadHandler: Handler? = null
+
+
+    private lateinit var btnPlay: ImageButton
 
     private lateinit var trackName: TextView
     private lateinit var trackImage: ImageView
@@ -36,7 +54,6 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_player)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.constraint_activity_player)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -45,6 +62,9 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val buttonBack = findViewById<ImageButton>(R.id.button_back)
+        btnPlay = findViewById(R.id.btnPlayPause)
+
+        mainThreadHandler = Handler(Looper.getMainLooper())
 
         groupTrackDuration = findViewById(R.id.groupDuration)
         groupCollectionName = findViewById(R.id.groupCollectionName)
@@ -63,9 +83,13 @@ class PlayerActivity : AppCompatActivity() {
         genreName = findViewById(R.id.textViewPrimaryGenreNameValue)
         country = findViewById(R.id.textViewCountryValue)
 
+        setTrack()
+
+        mainThreadHandler?.post(manageTime())
+
         buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        setTrack()
+        btnPlay.setOnClickListener { playbackControl() }
     }
 
 
@@ -82,6 +106,8 @@ class PlayerActivity : AppCompatActivity() {
         setValueToTextView(trackDuration, groupTrackDuration, Converter.longToMMSS(track.trackDuration))
         setValueToTextView(collectionName, groupCollectionName, track.collectionName)
         setValueToTextView(releaseDate, groupReleaseDate, Converter.dateToYear(track.releaseDate))
+
+        preparePlayer(track.previewUrl)
     }
 
     private fun getTrack(): Track {
@@ -100,10 +126,72 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setValueToTextView(textView: TextView, group: Group, value: String?) {
-        if (value.isNullOrEmpty()) {
-            group.visibility = View.GONE
-        } else {
-            textView.text = value
+        group.isVisible = !value.isNullOrEmpty()
+        textView.text = value
+    }
+
+    private fun preparePlayer(url: String?) {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            btnPlay.isEnabled = true
+            playerState = STATE_PREPARED
         }
+        mediaPlayer.setOnCompletionListener {
+            btnPlay.setImageDrawable(getDrawable(R.drawable.ic_play))
+            playerState = STATE_PREPARED
+            mainThreadHandler?.removeCallbacks(manageTime())
+            currentTime.text = getString(R.string._0_00)
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        btnPlay.setImageDrawable(getDrawable(R.drawable.ic_pause))
+        playerState = STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        btnPlay.setImageDrawable(getDrawable(R.drawable.ic_play))
+        playerState = STATE_PAUSED
+        mainThreadHandler?.removeCallbacks(manageTime())
+    }
+
+    private fun playbackControl() {
+
+        when(playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
+
+    private fun manageTime() : Runnable {
+        return object : Runnable {
+            override fun run() {
+                when (playerState) {
+                    STATE_PLAYING -> {
+                        val currentPosition = mediaPlayer.currentPosition
+                        currentTime.text = Converter.longToMMSS(currentPosition.toString())
+                    }
+                }
+                mainThreadHandler?.postDelayed(this, REFRESH_TIME_DELAY_MILLIS)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainThreadHandler?.removeCallbacks(manageTime())
+        mediaPlayer.release()
     }
 }

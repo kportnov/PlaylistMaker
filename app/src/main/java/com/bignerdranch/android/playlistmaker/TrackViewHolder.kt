@@ -13,7 +13,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 
 
-class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class TrackViewHolder(parent: ViewGroup): RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
+    .inflate(R.layout.recycle_search_card, parent, false)) {
 
     private val trackName = itemView.findViewById<TextView>(R.id.track_name)
     private val trackArtist = itemView.findViewById<TextView>(R.id.track_artist)
@@ -35,26 +36,22 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class TrackAdapter(private val trackList: MutableList<Track>, private val context: Context): RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(val clickListener: TrackAdapterClickListener): RecyclerView.Adapter<TrackViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.recycle_search_card, parent, false)
-        return TrackViewHolder(view)
-    }
+    var trackList = ArrayList<Track>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder(parent)
 
     override fun getItemCount(): Int {
         return trackList.size
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        val searchHistory = SearchHistory(context.getSharedPreferences(SHARED_PREFERENCES_SEARCH, 0))
-
         holder.bind(trackList[position])
-        holder.itemView.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
-            intent.putExtra(KEY_PLAYER_ACTIVITY, Gson().toJson(trackList[position]))
-            context.startActivity(intent)
-            searchHistory.addToHistoryList(trackList[position])
-        }
+        holder.itemView.setOnClickListener { clickListener.onTrackClick(trackList[position]) }
+    }
+
+    fun interface TrackAdapterClickListener {
+        fun onTrackClick(track: Track)
     }
 }
