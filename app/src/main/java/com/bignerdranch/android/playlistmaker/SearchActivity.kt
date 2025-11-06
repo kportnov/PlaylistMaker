@@ -1,8 +1,13 @@
 package com.bignerdranch.android.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -11,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +28,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +40,15 @@ const val SEARCH_HISTORY_KEY = "key_for_history_key"
 
 class SearchActivity : AppCompatActivity() {
 
+    companion object {
+        const val EDIT_TEXT = "EDIT_TEXT"
+        const val EDIT_TEXT_INPUT = ""
+        const val STATE = 0
+        const val STATE_CONDITION = "STATE"
+
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
     private var editTextValue = EDIT_TEXT_INPUT
     //var state for keeping visibility condition of ERROR elements after day/dark mode change
     private var state = STATE
@@ -45,11 +61,10 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesService = retrofit.create(ITunesSearchAPI::class.java)
 
-    private val tracks = mutableListOf<Track>()
-    private val adapter = TrackAdapter(tracks, this)
-
-    private val trackHistory = mutableListOf<Track>()
-    private val trackHistoryAdapter = TrackAdapter(trackHistory, this)
+    private val tracks = ArrayList<Track>()
+    private val trackHistory = ArrayList<Track>()
+    private val adapter = TrackAdapter { adapterInit(it) }
+    private val trackHistoryAdapter = TrackAdapter { adapterInit(it) }
 
     private lateinit var editTextSearch: EditText
     private lateinit var buttonBack: ImageButton
@@ -67,8 +82,16 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var lastRequest: String
     private val layoutHandler = ViewGroupHandler()
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var searchHistory: SearchHistory
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var isClickAllowed = true
+    private val searchRunnable = Runnable { search(false) }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +111,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_SEARCH, MODE_PRIVATE)
-        val searchHistory = SearchHistory(sharedPreferences)
+        searchHistory = SearchHistory(sharedPreferences)
         trackHistory.addAll(searchHistory.readSharedPreferences())
 
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -102,14 +125,19 @@ class SearchActivity : AppCompatActivity() {
         textViewError = findViewById(R.id.textViewError)
         buttonUpdate = findViewById(R.id.btn_update)
         buttonClearHistory = findViewById(R.id.btn_clear_history)
+        progressBar = findViewById(R.id.progressBar)
 
         recyclerView = findViewById(R.id.recycler_search)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
+        adapter.trackList = tracks
+
         recyclerViewHistory = findViewById(R.id.recycler_search_history)
         recyclerViewHistory.layoutManager = LinearLayoutManager(this)
         recyclerViewHistory.adapter = trackHistoryAdapter
+
+        trackHistoryAdapter.trackList = trackHistory
 
 
         sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
@@ -124,18 +152,28 @@ class SearchActivity : AppCompatActivity() {
 
         layoutHandler.manageLayout()
 
-        editTextSearch.doOnTextChanged { text, _, _, _ ->
-            imageViewClear.isVisible = !text.isNullOrEmpty()
-            editTextValue = text.toString()
+        editTextSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                searchDebounce()
 
-            if (editTextSearch.hasFocus() && text?.isEmpty() == true) {
-                layoutHandler.setLayout(ViewGroupAdditional.SEARCH_HISTORY)
-            } else {
-                if (!layoutHandler.isError()) {
-                    layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                imageViewClear.isVisible = !text.isNullOrEmpty()
+                editTextValue = text.toString()
+
+                if (editTextSearch.hasFocus() && text?.isEmpty() == true) {
+                    layoutHandler.setLayout(ViewGroupAdditional.SEARCH_HISTORY)
+                } else {
+                    if (!layoutHandler.isError()) {
+                        layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
+                    }
                 }
             }
-        }
+
+            override fun afterTextChanged(text: Editable?) {
+            }
+        })
 
         editTextSearch.setText(editTextValue)
 
@@ -186,6 +224,8 @@ class SearchActivity : AppCompatActivity() {
             lastRequest
         }
         if (request.isNotEmpty()) {
+            layoutHandler.setLayout(ViewGroupAdditional.SEARCH_IN_ACTION)
+
             iTunesService.search(request)
                 .enqueue(object : Callback<TrackResponse> {
                     override fun onResponse(
@@ -222,20 +262,12 @@ class SearchActivity : AppCompatActivity() {
         outState.putInt(STATE_CONDITION, state)
     }
 
-
-
-    companion object {
-        const val EDIT_TEXT = "EDIT_TEXT"
-        const val EDIT_TEXT_INPUT = ""
-        const val STATE = 0
-        const val STATE_CONDITION = "STATE"
-    }
-
     private enum class ViewGroupAdditional {
         NORMAL,
         SEARCH_HISTORY,
         CONNECTION_FAILURE,
         NOTHING_FOUND,
+        SEARCH_IN_ACTION
     }
 
     private inner class ViewGroupHandler {
@@ -247,6 +279,7 @@ class SearchActivity : AppCompatActivity() {
                 ViewGroupAdditional.SEARCH_HISTORY -> 1
                 ViewGroupAdditional.NOTHING_FOUND -> 2
                 ViewGroupAdditional.CONNECTION_FAILURE -> 3
+                ViewGroupAdditional.SEARCH_IN_ACTION -> 4
             }
             manageLayout()
         }
@@ -256,7 +289,8 @@ class SearchActivity : AppCompatActivity() {
                 0 -> ViewGroupAdditional.NORMAL
                 1 -> ViewGroupAdditional.SEARCH_HISTORY
                 2 -> ViewGroupAdditional.NOTHING_FOUND
-                else -> ViewGroupAdditional.CONNECTION_FAILURE
+                3 -> ViewGroupAdditional.CONNECTION_FAILURE
+                else -> ViewGroupAdditional.SEARCH_IN_ACTION
             }
         }
 
@@ -268,6 +302,7 @@ class SearchActivity : AppCompatActivity() {
                     viewGroupError.visibility = View.GONE
                     viewGroupSearchHistory.visibility = View.GONE
                     recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                 }
 
                 ViewGroupAdditional.SEARCH_HISTORY -> {
@@ -282,8 +317,8 @@ class SearchActivity : AppCompatActivity() {
                     viewGroupError.visibility = View.VISIBLE
                     viewGroupSearchHistory.visibility = View.GONE
                     recyclerView.visibility = View.GONE
-
                     buttonUpdate.visibility = View.GONE
+                    progressBar.visibility = View.GONE
 
                     textViewError.text = resources.getText(R.string.nothing_found)
                     imageError.setImageDrawable(
@@ -298,6 +333,7 @@ class SearchActivity : AppCompatActivity() {
                     viewGroupError.visibility = View.VISIBLE
                     recyclerView.visibility = View.GONE
                     viewGroupSearchHistory.visibility = View.GONE
+                    progressBar.visibility = View.GONE
 
                     textViewError.text = resources.getText(R.string.connection_problems)
                     imageError.setImageDrawable(
@@ -307,6 +343,14 @@ class SearchActivity : AppCompatActivity() {
                         )
                     )
                 }
+
+                ViewGroupAdditional.SEARCH_IN_ACTION -> {
+                    viewGroupError.visibility = View.GONE
+                    viewGroupSearchHistory.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+
+                }
             }
         }
 
@@ -314,5 +358,29 @@ class SearchActivity : AppCompatActivity() {
             return getViewGroupByState() == ViewGroupAdditional.CONNECTION_FAILURE ||
                     getViewGroupByState() == ViewGroupAdditional.CONNECTION_FAILURE
         }
+    }
+
+    private fun adapterInit(track: Track) {
+        if (clickDebounce()) {
+            val intent = Intent(this, PlayerActivity::class.java)
+            intent.putExtra(KEY_PLAYER_ACTIVITY, Gson().toJson(track))
+            startActivity(intent)
+            searchHistory.addToHistoryList(track)
+        }
+    }
+
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 }

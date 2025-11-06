@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_activity_player"
@@ -65,13 +64,13 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="54dp"
             android:src="@drawable/ic_add_to_playlist"
-            app:layout_constraintEnd_toStartOf="@+id/imBtnPlayPause"
+            app:layout_constraintEnd_toStartOf="@+id/btnPlayPause"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewArtist" />
 
         <ImageButton
-            android:id="@+id/imBtnPlayPause"
+            android:id="@+id/btnPlayPause"
             style="@style/ButtonBackNavigationStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +88,7 @@
             android:layout_marginEnd="24dp"
             android:src="@drawable/ic_favorite"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imBtnPlayPause"
+            app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
             app:layout_constraintTop_toTopOf="@+id/imBtnAdd" />
 
         <androidx.constraintlayout.widget.Group
@@ -97,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:constraint_referenced_ids="imBtnAdd,imBtnPlayPause, imBtnFavorite" />
+            app:constraint_referenced_ids="imBtnAdd,btnPlayPause, imBtnFavorite" />
 
         <TextView
             android:id="@+id/textViewCurrentTime"
@@ -110,7 +109,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imBtnPlayPause" />
+            app:layout_constraintTop_toBottomOf="@id/btnPlayPause" />
 
         <TextView
             android:id="@+id/textViewDuration"
@@ -167,11 +166,11 @@
             style="@style/SongNameSearchStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="end"
             android:paddingHorizontal="16dp"
             android:paddingTop="9dp"
             android:paddingBottom="8dp"
             android:textSize="13sp"
-            android:gravity="end"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/textViewCollectionName"
             app:layout_constraintEnd_toEndOf="parent"
