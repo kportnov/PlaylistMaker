@@ -201,11 +201,18 @@ class SearchActivity : AppCompatActivity() {
             layoutHandler.setLayout(ViewGroupAdditional.SEARCH_IN_ACTION)
             tracksInteractorImpl.searchTracks(request, object : TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>) {
-                    adapter.trackList = foundTracks
-                    handler.post {
-                        recyclerView.adapter = adapter
-                        layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
+                    if (foundTracks.isNotEmpty()) {
+                        adapter.trackList = foundTracks
+                        handler.post {
+                            recyclerView.adapter = adapter
+                            layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
+                        }
+                    } else {
+                        handler.post {
+                            layoutHandler.setLayout(ViewGroupAdditional.NOTHING_FOUND)
+                        }
                     }
+
                 }
             })
         } else {
