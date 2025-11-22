@@ -1,10 +1,11 @@
-package com.bignerdranch.android.playlistmaker
+package com.bignerdranch.android.playlistmaker.presentation.media_library
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bignerdranch.android.playlistmaker.R
 
 class MediaLibraryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

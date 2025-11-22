@@ -1,8 +1,8 @@
-package com.bignerdranch.android.playlistmaker
+package com.bignerdranch.android.playlistmaker.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Track (
+data class TrackDto (
     val trackName: String,
     val artistName: String,
     @SerializedName("trackTimeMillis") val trackDuration: String?,

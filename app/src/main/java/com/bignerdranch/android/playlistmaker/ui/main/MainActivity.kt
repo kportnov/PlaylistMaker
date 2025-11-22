@@ -1,9 +1,13 @@
-package com.bignerdranch.android.playlistmaker
+package com.bignerdranch.android.playlistmaker.ui.main
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.bignerdranch.android.playlistmaker.presentation.media_library.MediaLibraryActivity
+import com.bignerdranch.android.playlistmaker.R
+import com.bignerdranch.android.playlistmaker.presentation.search.SearchActivity
+import com.bignerdranch.android.playlistmaker.presentation.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

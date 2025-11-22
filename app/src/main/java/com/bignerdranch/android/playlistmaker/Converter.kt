@@ -5,27 +5,26 @@ import android.util.TypedValue
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class Converter {
-    companion object {
-        fun dpToPx(dp: Float, context: Context): Int {
-            return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                context.resources.displayMetrics).toInt()
-        }
+object Converter {
+    fun dpToPx(dp: Float, context: Context): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            context.resources.displayMetrics
+        ).toInt()
+    }
 
-        fun longToMMSS(value: String?): String? {
-            return if (!value.isNullOrEmpty()) {
-                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(value.toLong())
-            } else null
-        }
+    fun longToMMSS(value: String?): String? {
+        return if (!value.isNullOrEmpty()) {
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(value.toLong())
+        } else null
+    }
 
-        fun dateToYear(value: String?): String? {
-            return value?.take(4)
-        }
+    fun dateToYear(value: String?): String? {
+        return value?.take(4)
+    }
 
-        fun getCoverArtwork(artworkUrl100: String?): String? {
-           return artworkUrl100?.replaceAfterLast('/',"512x512bb.jpg")
-        }
+    fun getCoverArtwork(artworkUrl100: String?): String? {
+        return artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
     }
 }
