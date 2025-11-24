@@ -20,7 +20,6 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -59,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewHistory: RecyclerView
     private lateinit var viewGroupError: LinearLayout
-    private lateinit var viewGroupSearchHistory: ConstraintLayout
+    private lateinit var viewGroupSearchHistory: LinearLayout
 
     private lateinit var imageError: ImageView
     private lateinit var textViewError: TextView
@@ -122,9 +121,9 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewHistory.layoutManager = LinearLayoutManager(this)
 
         sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == SEARCH_HISTORY_KEY) {
+/*   Временно отключено         if (key == SEARCH_HISTORY_KEY) {
                 loadHistory()
-            }
+            }*/
         }
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
@@ -164,7 +163,7 @@ class SearchActivity : AppCompatActivity() {
                 loadHistory()
             } else {
                 if (!layoutHandler.isError()) {
-                    loadTracks(false)
+                    layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
                 }
             }
         }
@@ -181,12 +180,12 @@ class SearchActivity : AppCompatActivity() {
 
         buttonClearHistory.setOnClickListener {
             tracksHistoryInteractorImpl.clearHistory()
+            layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
         }
 
         buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        loadTracks(false)
-        loadHistory()
+        layoutHandler.manageLayout()
     }
 
     private fun loadTracks(updateClicked: Boolean) {
@@ -232,7 +231,6 @@ class SearchActivity : AppCompatActivity() {
                     layoutHandler.setLayout(ViewGroupAdditional.SEARCH_HISTORY)
                 } else {
                     layoutHandler.setLayout(ViewGroupAdditional.NORMAL)
-                    loadTracks(false)
                 }
             }
         })

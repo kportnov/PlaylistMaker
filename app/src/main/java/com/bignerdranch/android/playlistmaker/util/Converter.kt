@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker
+package com.bignerdranch.android.playlistmaker.util
 
 import android.content.Context
 import android.util.TypedValue

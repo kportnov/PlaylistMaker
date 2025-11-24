@@ -8,11 +8,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import com.bignerdranch.android.playlistmaker.Converter
+import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.domain.models.Track
 import com.bumptech.glide.Glide
@@ -133,7 +134,7 @@ class PlayerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            btnPlay.setImageDrawable(getDrawable(R.drawable.ic_play))
+            btnPlay.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_play))
             playerState = STATE_PREPARED
             mainThreadHandler?.removeCallbacks(timeManager!!)
             currentTime.text = getString(R.string._0_00)
@@ -142,14 +143,14 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun startPlayer() {
         mediaPlayer.start()
-        btnPlay.setImageDrawable(getDrawable(R.drawable.ic_pause))
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_pause))
         mainThreadHandler?.post(timeManager!!)
         playerState = STATE_PLAYING
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
-        btnPlay.setImageDrawable(getDrawable(R.drawable.ic_play))
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_play))
         playerState = STATE_PAUSED
         mainThreadHandler?.removeCallbacks(timeManager!!)
     }

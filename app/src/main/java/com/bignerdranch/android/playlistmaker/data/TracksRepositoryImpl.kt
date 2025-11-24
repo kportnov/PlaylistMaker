@@ -1,6 +1,6 @@
 package com.bignerdranch.android.playlistmaker.data
 
-import com.bignerdranch.android.playlistmaker.Converter
+import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bignerdranch.android.playlistmaker.data.dto.TracksSearchRequest
 import com.bignerdranch.android.playlistmaker.data.dto.TracksSearchResponse
 import com.bignerdranch.android.playlistmaker.domain.api.TracksRepository

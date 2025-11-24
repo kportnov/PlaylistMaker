@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bignerdranch.android.playlistmaker.Converter
+import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.domain.models.Track
 import com.bumptech.glide.Glide
