@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker
+package com.bignerdranch.android.playlistmaker.presentation.player
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -8,10 +8,14 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.bignerdranch.android.playlistmaker.util.Converter
+import com.bignerdranch.android.playlistmaker.R
+import com.bignerdranch.android.playlistmaker.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
@@ -20,18 +24,11 @@ const val KEY_PLAYER_ACTIVITY = "key player activity"
 
 class PlayerActivity : AppCompatActivity() {
 
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val REFRESH_TIME_DELAY_MILLIS = 300L
-
-    }
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler? = null
+    private var timeManager: Runnable? = null
 
 
     private lateinit var btnPlay: ImageButton
@@ -65,6 +62,7 @@ class PlayerActivity : AppCompatActivity() {
         btnPlay = findViewById(R.id.btnPlayPause)
 
         mainThreadHandler = Handler(Looper.getMainLooper())
+        timeManager = manageTime()
 
         groupTrackDuration = findViewById(R.id.groupDuration)
         groupCollectionName = findViewById(R.id.groupCollectionName)
@@ -85,8 +83,6 @@ class PlayerActivity : AppCompatActivity() {
 
         setTrack()
 
-        mainThreadHandler?.post(manageTime())
-
         buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         btnPlay.setOnClickListener { playbackControl() }
@@ -103,9 +99,9 @@ class PlayerActivity : AppCompatActivity() {
         genreName.text = track.primaryGenreName
         country.text = track.country
 
-        setValueToTextView(trackDuration, groupTrackDuration, Converter.longToMMSS(track.trackDuration))
+        setValueToTextView(trackDuration, groupTrackDuration, track.trackDuration)
         setValueToTextView(collectionName, groupCollectionName, track.collectionName)
-        setValueToTextView(releaseDate, groupReleaseDate, Converter.dateToYear(track.releaseDate))
+        setValueToTextView(releaseDate, groupReleaseDate, track.releaseDate)
 
         preparePlayer(track.previewUrl)
     }
@@ -138,24 +134,25 @@ class PlayerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            btnPlay.setImageDrawable(getDrawable(R.drawable.ic_play))
+            btnPlay.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_play))
             playerState = STATE_PREPARED
-            mainThreadHandler?.removeCallbacks(manageTime())
+            mainThreadHandler?.removeCallbacks(timeManager!!)
             currentTime.text = getString(R.string._0_00)
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
-        btnPlay.setImageDrawable(getDrawable(R.drawable.ic_pause))
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_pause))
+        mainThreadHandler?.post(timeManager!!)
         playerState = STATE_PLAYING
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
-        btnPlay.setImageDrawable(getDrawable(R.drawable.ic_play))
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_play))
         playerState = STATE_PAUSED
-        mainThreadHandler?.removeCallbacks(manageTime())
+        mainThreadHandler?.removeCallbacks(timeManager!!)
     }
 
     private fun playbackControl() {
@@ -191,7 +188,16 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mainThreadHandler?.removeCallbacks(manageTime())
+        mainThreadHandler?.removeCallbacks(timeManager!!)
         mediaPlayer.release()
+    }
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val REFRESH_TIME_DELAY_MILLIS = 300L
+
     }
 }

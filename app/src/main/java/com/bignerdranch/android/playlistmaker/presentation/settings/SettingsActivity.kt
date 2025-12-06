@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker
+package com.bignerdranch.android.playlistmaker.presentation.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -9,14 +9,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bignerdranch.android.playlistmaker.App
+import com.bignerdranch.android.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 const val SHARED_PREFERENCES_SETTINGS = "preferences_settings"
 const val NIGHT_MODE_KEY = "key_for_night_mode"
 
 class SettingsActivity : AppCompatActivity() {
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_SETTINGS, MODE_PRIVATE)
-
 
         val switchTheme = findViewById<SwitchMaterial>(R.id.themeSwitcher)
         val btnShareTheApp = findViewById<Button>(R.id.btn_share_the_app)

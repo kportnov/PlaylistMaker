@@ -3,8 +3,7 @@
 <!-- Никак не получалось сделать с Linear/Frame/Relative layout
 чтобы кнопка внизу не смещалась за layout при заполнении recycler -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/viewGroupSearchHistory"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,34 +16,27 @@
         android:layout_marginTop="24dp"
         android:paddingTop="18dp"
         android:paddingBottom="12dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
         android:text="@string/you_have_been_searching"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         style="@style/TextErrorStyle" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_search_history"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintBottom_toTopOf="@id/btn_clear_history"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_clear_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
         android:text="@string/clear_history"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_search_history"
         style="@style/ButtonUpdateStyle"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
