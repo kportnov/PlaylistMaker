@@ -32,8 +32,8 @@ import com.bignerdranch.android.playlistmaker.presentation.TrackAdapter
 import com.bignerdranch.android.playlistmaker.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.domain.api.TracksInteractor
 import com.bignerdranch.android.playlistmaker.domain.models.Track
-import com.bignerdranch.android.playlistmaker.presentation.player.KEY_PLAYER_ACTIVITY
-import com.bignerdranch.android.playlistmaker.presentation.player.PlayerActivity
+import com.bignerdranch.android.playlistmaker.ui.player.KEY_PLAYER_ACTIVITY
+import com.bignerdranch.android.playlistmaker.ui.player.PlayerActivity
 import com.google.gson.Gson
 
 
