@@ -6,20 +6,19 @@ import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.data.dto.TracksSearchRequest
 import com.bignerdranch.android.playlistmaker.search.data.dto.TracksSearchResponse
 import com.bignerdranch.android.playlistmaker.util.Converter
-import com.bignerdranch.android.playlistmaker.util.Resource
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
 
-    override fun searchTracks(expression: String): Resource<List<Track>> {
+    override fun searchTracks(expression: String): Result<List<Track>> {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
         return when (response.resultCode) {
             -1 -> {
-                Resource.Error(R.string.connection_problems.toString())
+                Result.failure(Throwable(R.string.connection_problems.toString()))
             }
             200 -> {
                 val response = response as TracksSearchResponse
 
-                Resource.Success(response.results.map {
+                Result.success(response.results.map {
                     Track(
                         it.trackName,
                         it.artistName,
@@ -36,7 +35,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRep
             }
 
             else -> {
-                Resource.Error(R.string.no_respond.toString())
+                Result.failure(Throwable(R.string.no_respond.toString()))
             }
 
         }

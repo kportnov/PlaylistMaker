@@ -21,20 +21,6 @@ import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
 
 class SearchViewModel(private val context: Context): ViewModel() {
 
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-
-        private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val app = (this[APPLICATION_KEY] as PlaylistApplication)
-                SearchViewModel(app)
-            }
-        }
-
-    }
-
     private val tracksInteractor = Creator.provideTracksInteractor(context)
     private val tracksHistoryInteractor = Creator.provideTracksHistoryInteractor(context)
     private var latestSearchText: String? = null
@@ -107,6 +93,7 @@ class SearchViewModel(private val context: Context): ViewModel() {
     fun loadHistory() {
         tracksHistoryInteractor.getHistory(object : TracksHistoryInteractor.TracksConsumer {
             override fun consume(tracks: List<Track>?) {
+                handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
                 handler.post {
                     if (!tracks.isNullOrEmpty()) {
                         renderState(SearchState.History(tracks))
@@ -125,5 +112,17 @@ class SearchViewModel(private val context: Context): ViewModel() {
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    }
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        val SEARCH_REQUEST_TOKEN = Any()
+
+        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val app = (this[APPLICATION_KEY] as PlaylistApplication)
+                SearchViewModel(app)
+            }
+        }
     }
 }

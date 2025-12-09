@@ -7,7 +7,7 @@ import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepository) : TracksHistoryInteractor {
 
     override fun getHistory(consumer: TracksHistoryInteractor.TracksConsumer) {
-        consumer.consume(repository.getHistory().data)
+        consumer.consume(repository.getHistory().getOrNull())
     }
 
     override fun addToHistory(track: Track) {

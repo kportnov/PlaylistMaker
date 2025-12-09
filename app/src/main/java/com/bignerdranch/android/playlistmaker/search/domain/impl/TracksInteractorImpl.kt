@@ -2,7 +2,6 @@ package com.bignerdranch.android.playlistmaker.search.domain.impl
 
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksRepository
-import com.bignerdranch.android.playlistmaker.util.Resource
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
@@ -14,9 +13,12 @@ class TracksInteractorImpl(private val repository: TracksRepository) : TracksInt
         consumer: TracksInteractor.TracksConsumer
     ) {
         executor.execute {
-            when (val resource = repository.searchTracks(expression)) {
-                is Resource.Success -> { consumer.consume(resource.data, null) }
-                is Resource.Error -> { consumer.consume(null, resource.message) }
+            val resource = repository.searchTracks(expression)
+            if (resource.isSuccess) {
+                consumer.consume(resource.getOrNull(), null)
+            }
+            if (resource.isFailure) {
+                consumer.consume(null, resource.exceptionOrNull()?.message)
             }
         }
     }

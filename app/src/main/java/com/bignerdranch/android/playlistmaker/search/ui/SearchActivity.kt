@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,21 +59,18 @@ class SearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, SearchViewModel.getFactory())
             .get(SearchViewModel::class.java)
 
-
-
         viewModel?.observeState()?.observe(this) {
             render(it)
         }
 
         binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
-            if (!text.isNullOrEmpty()) {
-                binding.clearIcon.visibility = View.VISIBLE
+            binding.clearIcon.isVisible = !text.isNullOrEmpty()
+            if (binding.editTextSearch.hasFocus() && text?.isEmpty() == true) {
+                viewModel?.loadHistory()
+            } else {
                 viewModel?.searchDebounce(
                     changedText = text.toString()
                 )
-            } else {
-                binding.clearIcon.visibility = View.GONE
-                viewModel?.loadHistory()
             }
         }
 
@@ -83,11 +81,9 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-
         binding.error.btnUpdate.setOnClickListener {
             viewModel?.searchRequest(binding.editTextSearch.text.toString())
         }
-
 
         binding.clearIcon.setOnClickListener {
             binding.editTextSearch.text.clear()
@@ -101,7 +97,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-
     }
 
     override fun onResume() {
