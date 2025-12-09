@@ -15,16 +15,4 @@ class SharingInteractorImpl(private val externalNavigator: ExternalNavigator) : 
     override fun openSupport() {
         externalNavigator.sendToSupport()
     }
-
-/*    private fun getShareAppLink(): String {
-        // Нужно реализовать
-    }
-
-    private fun getSupportEmailData(): EmailData {
-        // Нужно реализовать
-    }
-
-    private fun getTermsLink(): String {
-        // Нужно реализовать
-    }*/
 }

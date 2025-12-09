@@ -4,5 +4,5 @@ import com.bignerdranch.android.playlistmaker.settings.domain.model.ThemeSetting
 
 interface SettingsRepository {
     fun getThemeSettings(): ThemeSettings?
-    fun updateThemeSetting(settings: ThemeSettings)
+    fun updateThemeSetting(themeSettings: ThemeSettings)
 }

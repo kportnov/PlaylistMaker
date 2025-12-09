@@ -2,7 +2,6 @@ package com.bignerdranch.android.playlistmaker.util
 
 import android.content.Context
 import android.util.TypedValue
-
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -15,9 +14,9 @@ object Converter {
         ).toInt()
     }
 
-    fun longToMMSS(value: String?): String? {
-        return if (!value.isNullOrEmpty()) {
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(value.toLong())
+    fun longToMMSS(value: Long?): String? {
+        return if (value != null) {
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(value)
         } else null
     }
 

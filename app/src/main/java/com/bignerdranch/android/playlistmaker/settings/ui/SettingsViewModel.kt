@@ -1,6 +1,5 @@
 package com.bignerdranch.android.playlistmaker.settings.ui
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,8 +15,7 @@ import com.bignerdranch.android.playlistmaker.settings.domain.model.ThemeSetting
 
 class SettingsViewModel(
     private val sharingInteractor: SharingInteractor,
-    private val settingsInteractor: SettingsInteractor,
-    private val context: Context
+    private val settingsInteractor: SettingsInteractor
 ) : ViewModel() {
 
     companion object {
@@ -26,9 +24,7 @@ class SettingsViewModel(
                 val app = (this[APPLICATION_KEY] as PlaylistApplication)
                 SettingsViewModel(
                     Creator.provideSharingInteractor(app),
-                    Creator.provideSettingsInteractor(app),
-                    app)
-
+                    Creator.provideSettingsInteractor(app))
             }
         }
     }
@@ -39,7 +35,6 @@ class SettingsViewModel(
     fun manageTheme(isChecked: Boolean) {
         val theme = if (isChecked) ThemeSettings.NIGHT_MODE else ThemeSettings.DAY_MODE
         settingsInteractor.updateThemeSetting(theme)
-        (context as PlaylistApplication).switchTheme(isChecked)
     }
 
     fun getTheme(): Boolean? {

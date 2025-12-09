@@ -3,14 +3,14 @@ package com.bignerdranch.android.playlistmaker.search.data
 import com.bignerdranch.android.playlistmaker.search.data.dto.TrackHistoryDto
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryRepository
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
-import com.bignerdranch.android.playlistmaker.util.MAXIMUM_SEARCH_HISTORY_ITEMS
 import com.bignerdranch.android.playlistmaker.util.Resource
 
+
+private const val MAXIMUM_SEARCH_HISTORY_ITEMS = 10
 class TracksHistoryRepositoryImpl(
     private val storage: StorageClient<ArrayList<TrackHistoryDto>>): TracksHistoryRepository {
 
     override fun addToHistory(track: Track) {
-
         val tracks = getHistory().data?.toMutableList()
 
         if (tracks?.map { it.trackId }!!.contains(track.trackId)) {

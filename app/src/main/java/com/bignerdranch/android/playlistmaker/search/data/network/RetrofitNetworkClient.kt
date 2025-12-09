@@ -9,12 +9,12 @@ import com.bignerdranch.android.playlistmaker.search.data.dto.TracksSearchReques
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val iTunesSearchAPIBaseURL = "https://itunes.apple.com"
+private const val ITUNES_SEARCH_BASE_URL = "https://itunes.apple.com"
 
 class RetrofitNetworkClient(private val context: Context): NetworkClient {
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesSearchAPIBaseURL)
+        .baseUrl(ITUNES_SEARCH_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

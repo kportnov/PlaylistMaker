@@ -21,10 +21,12 @@ import com.bignerdranch.android.playlistmaker.settings.domain.api.SharingInterac
 import com.bignerdranch.android.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.bignerdranch.android.playlistmaker.settings.domain.impl.SharingInteractorImpl
 import com.bignerdranch.android.playlistmaker.settings.domain.model.ThemeSettings
-import com.bignerdranch.android.playlistmaker.util.SEARCH_HISTORY_KEY
-import com.bignerdranch.android.playlistmaker.util.THEME_KEY
+
 
 import com.google.gson.reflect.TypeToken
+
+private const val THEME_KEY = "THEME"
+private const val SEARCH_HISTORY_KEY = "HISTORY"
 
 object Creator {
     private lateinit var application: Application
@@ -60,7 +62,8 @@ object Creator {
                 context,
                 THEME_KEY,
                 object : TypeToken<ThemeSettings>() {}.type
-            )
+            ),
+            context
         )
     }
 

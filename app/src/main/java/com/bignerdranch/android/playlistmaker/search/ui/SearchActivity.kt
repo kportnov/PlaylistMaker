@@ -4,9 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
@@ -14,12 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivitySearchBinding
-import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.player.ui.KEY_PLAYER_ACTIVITY
+import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.player.ui.PlayerActivity
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
 import com.google.gson.Gson
@@ -31,8 +29,6 @@ class SearchActivity : AppCompatActivity() {
 
     private val adapter = TrackAdapter { adapterInit(it) }
     private val adapterHistory = TrackAdapter { adapterInit(it) }
-
-    private var textWatcher: TextWatcher? = null
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
@@ -68,22 +64,17 @@ class SearchActivity : AppCompatActivity() {
             render(it)
         }
 
-        textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-            override fun afterTextChanged(s: Editable?) { }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.isNullOrEmpty()) {
-                    binding.clearIcon.visibility = View.VISIBLE
-                    viewModel?.searchDebounce(
-                        changedText = s.toString()
-                    )
-                } else {
-                    binding.clearIcon.visibility = View.GONE
-                    viewModel?.loadHistory()
-                }
+        binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
+            if (!text.isNullOrEmpty()) {
+                binding.clearIcon.visibility = View.VISIBLE
+                viewModel?.searchDebounce(
+                    changedText = text.toString()
+                )
+            } else {
+                binding.clearIcon.visibility = View.GONE
+                viewModel?.loadHistory()
             }
         }
-        textWatcher?.let { binding.editTextSearch.addTextChangedListener(it) }
 
         binding.editTextSearch.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && binding.editTextSearch.text.isEmpty()) {
@@ -122,7 +113,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        textWatcher?.let { binding.editTextSearch.removeTextChangedListener(it) }
     }
 
     private fun adapterInit(track: Track) {
@@ -175,8 +165,6 @@ class SearchActivity : AppCompatActivity() {
         }
         adapterHistory.trackList.clear()
         adapterHistory.trackList.addAll(tracks)
-
-        Log.i("MYTEST","dataSetChanged")
         adapterHistory.notifyDataSetChanged()
     }
 

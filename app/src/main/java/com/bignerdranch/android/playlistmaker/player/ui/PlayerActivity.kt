@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 
-const val KEY_PLAYER_ACTIVITY = "key player activity"
+const val KEY_PLAYER_ACTIVITY = "KEY_PLAYER_ACTIVITY"
 
 class PlayerActivity : AppCompatActivity() {
 

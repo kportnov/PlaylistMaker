@@ -14,24 +14,11 @@ import com.bignerdranch.android.playlistmaker.util.Converter
 
 class PlayerViewModel(private val track: Track) : ViewModel() {
 
-    companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-
-        fun getFactory(track: Track): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(track)
-            }
-        }
-    }
-
     private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
     fun observePlayerState(): LiveData<Int> = playerStateLiveData
 
-    private val progressTimeLiveData = MutableLiveData("00:00")
-    fun observeProgressTime(): LiveData<String> = progressTimeLiveData
+    private val progressTimeLiveData = MutableLiveData(Converter.longToMMSS(0))
+    fun observeProgressTime(): LiveData<String?> = progressTimeLiveData
 
     private val trackLiveData = MutableLiveData(track)
     fun observeTrackLiveData(): LiveData<Track> = trackLiveData
@@ -89,7 +76,7 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
     }
 
     private fun startTimerUpdate() {
-        progressTimeLiveData.postValue(Converter.longToMMSS(mediaPlayer.currentPosition.toString()))
+        progressTimeLiveData.postValue(Converter.longToMMSS(mediaPlayer.currentPosition.toLong()))
         handler.postDelayed(timerRunnable, 200)
     }
 
@@ -99,10 +86,23 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
 
     private fun resetTimer() {
         handler.removeCallbacks(timerRunnable)
-        progressTimeLiveData.postValue("00:00")
+        progressTimeLiveData.postValue(Converter.longToMMSS(0))
     }
 
     fun onPause() {
         pausePlayer()
+    }
+
+    companion object {
+        const val STATE_DEFAULT = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
+
+        fun getFactory(track: Track): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(track)
+            }
+        }
     }
 }
