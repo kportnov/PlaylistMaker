@@ -4,41 +4,21 @@ import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 
 sealed interface SearchState {
 
-    object Loading : SearchState {
-        override fun toString(): String {
-            return "Loading()"
-        }
-    }
+    object Loading : SearchState
 
     data class Content(
         val tracks: List<Track>
-    ) : SearchState {
-        override fun toString(): String {
-            return "Content"
-        }
-    }
+    ) : SearchState
 
     data class History(
         val tracks: List<Track>
-    ) : SearchState {
-        override fun toString(): String {
-            return "History"
-        }
-    }
+    ) : SearchState
 
     data class Error(
         val errorMessage: String
-    ) : SearchState {
-        override fun toString(): String {
-            return "Error"
-        }
-    }
+    ) : SearchState
 
     data class Empty(
         val message: String
-    ) : SearchState {
-        override fun toString(): String {
-            return "Empty"
-        }
-    }
+    ) : SearchState
 }

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker.presentation.media_library
+package com.bignerdranch.android.playlistmaker.media_library.ui
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

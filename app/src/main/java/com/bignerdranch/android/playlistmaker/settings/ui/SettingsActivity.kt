@@ -30,7 +30,6 @@ class SettingsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, SettingsViewModel.getFactory())
             .get(SettingsViewModel::class.java)
 
-
         binding.themeSwitcher.isChecked = viewModel?.getTheme() ?: false
 
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->

@@ -21,6 +21,8 @@ import com.bignerdranch.android.playlistmaker.settings.domain.api.SharingInterac
 import com.bignerdranch.android.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.bignerdranch.android.playlistmaker.settings.domain.impl.SharingInteractorImpl
 import com.bignerdranch.android.playlistmaker.settings.domain.model.ThemeSettings
+import com.bignerdranch.android.playlistmaker.util.SEARCH_HISTORY_KEY
+import com.bignerdranch.android.playlistmaker.util.THEME_KEY
 
 import com.google.gson.reflect.TypeToken
 
@@ -40,11 +42,11 @@ object Creator {
 
     private fun getTracksHistoryRepository(context: Context): TracksHistoryRepository {
         return TracksHistoryRepositoryImpl(
-            PrefsStorageClient<ArrayList<TrackHistoryDto>>(
-            context,
-            "HISTORY",
+            PrefsStorageClient(
+                context,
+                SEARCH_HISTORY_KEY,
             object : TypeToken<ArrayList<TrackHistoryDto>>() {}.type
-        )
+            )
         )
     }
 
@@ -54,9 +56,9 @@ object Creator {
 
     private fun getSettingsRepository(context: Context): SettingsRepository {
         return SettingsRepositoryImpl(
-            PrefsStorageClient<ThemeSettings>(
+            PrefsStorageClient(
                 context,
-                "THEME",
+                THEME_KEY,
                 object : TypeToken<ThemeSettings>() {}.type
             )
         )

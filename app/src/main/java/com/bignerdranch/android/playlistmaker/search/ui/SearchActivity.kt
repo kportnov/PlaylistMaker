@@ -1,7 +1,6 @@
 package com.bignerdranch.android.playlistmaker.search.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,32 +8,21 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivitySearchBinding
-import com.bignerdranch.android.playlistmaker.databinding.ActivitySearchErrorBinding
-import com.bignerdranch.android.playlistmaker.databinding.ActivitySearchHistoryBinding
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.player.ui.KEY_PLAYER_ACTIVITY
 import com.bignerdranch.android.playlistmaker.player.ui.PlayerActivity
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
 import com.google.gson.Gson
-
-
-const val SHARED_PREFERENCES_SEARCH= "preferences_search"
-const val SEARCH_HISTORY_KEY = "key_for_history_key"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -58,13 +46,13 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_search)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
         binding.recyclerSearch.layoutManager = LinearLayoutManager(this)
         binding.recyclerSearch.adapter = adapter
@@ -89,21 +77,13 @@ class SearchActivity : AppCompatActivity() {
                     viewModel?.searchDebounce(
                         changedText = s.toString()
                     )
+                } else {
+                    binding.clearIcon.visibility = View.GONE
+                    viewModel?.loadHistory()
                 }
             }
         }
         textWatcher?.let { binding.editTextSearch.addTextChangedListener(it) }
-
-
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-
-        binding.editTextSearch.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel?.searchDebounce(binding.editTextSearch.text.toString())
-                true
-            }
-            false
-        }
 
         binding.editTextSearch.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && binding.editTextSearch.text.isEmpty()) {

@@ -2,33 +2,32 @@ package com.bignerdranch.android.playlistmaker.main.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.bignerdranch.android.playlistmaker.R
-import com.bignerdranch.android.playlistmaker.presentation.media_library.MediaLibraryActivity
+import com.bignerdranch.android.playlistmaker.databinding.ActivityMainBinding
+import com.bignerdranch.android.playlistmaker.media_library.ui.MediaLibraryActivity
 import com.bignerdranch.android.playlistmaker.search.ui.SearchActivity
 import com.bignerdranch.android.playlistmaker.settings.ui.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val buttonSearch = findViewById<Button>(R.id.button_search)
-        val buttonMediaLibrary = findViewById<Button>(R.id.button_media_library)
-        val buttonSettings = findViewById<Button>(R.id.button_settings)
-
-        buttonSettings.setOnClickListener {
+        binding.buttonSettings .setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
-        buttonSearch.setOnClickListener {
+        binding.buttonSearch.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
 
-        buttonMediaLibrary.setOnClickListener {
+        binding.buttonMediaLibrary.setOnClickListener {
             val intent = Intent(this, MediaLibraryActivity::class.java)
             startActivity(intent)
         }

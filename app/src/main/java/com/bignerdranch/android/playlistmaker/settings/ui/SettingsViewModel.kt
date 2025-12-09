@@ -52,12 +52,9 @@ class SettingsViewModel(
 
     fun openTerms() {
         sharingInteractor.openTerms()
-
     }
 
     fun shareApp() {
         sharingInteractor.shareApp()
     }
-
-
 }

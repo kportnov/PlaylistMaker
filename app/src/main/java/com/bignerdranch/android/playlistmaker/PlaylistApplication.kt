@@ -7,7 +7,6 @@ import com.bignerdranch.android.playlistmaker.creator.Creator
 
 class PlaylistApplication: Application() {
 
-
     override fun onCreate() {
         super.onCreate()
 

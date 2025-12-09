@@ -13,15 +13,12 @@ private const val iTunesSearchAPIBaseURL = "https://itunes.apple.com"
 
 class RetrofitNetworkClient(private val context: Context): NetworkClient {
 
-
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesSearchAPIBaseURL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     private val iTunesService = retrofit.create(ITunesApiService::class.java)
-
-
 
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
@@ -52,6 +49,5 @@ class RetrofitNetworkClient(private val context: Context): NetworkClient {
 
         return body?.apply { resultCode = response.code() } ?:
             Response().apply { resultCode = response.code() }
-
     }
 }

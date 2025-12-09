@@ -45,6 +45,7 @@ class SearchViewModel(private val context: Context): ViewModel() {
 
 
     fun searchDebounce(changedText: String) {
+
         if (latestSearchText == changedText) {
             return
         }

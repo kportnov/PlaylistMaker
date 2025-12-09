@@ -1,22 +1,19 @@
 package com.bignerdranch.android.playlistmaker.settings.data
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.bignerdranch.android.playlistmaker.PlaylistApplication
 import com.bignerdranch.android.playlistmaker.R
 
 class ExternalNavigator(private val context: Context) {
 
     fun shareTheApp() {
-
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
         intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.https_practicum_yandex_ru_android_developer))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_via)))
+        val intentChooser = Intent.createChooser(intent, context.getString(R.string.share_via))
+        intentChooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intentChooser)
     }
 
     fun sendToSupport() {

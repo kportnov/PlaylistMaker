@@ -3,7 +3,7 @@ package com.bignerdranch.android.playlistmaker.search.data.storage
 import android.content.Context
 import android.content.SharedPreferences
 import com.bignerdranch.android.playlistmaker.search.data.StorageClient
-import com.bignerdranch.android.playlistmaker.search.ui.SHARED_PREFERENCES_SEARCH
+import com.bignerdranch.android.playlistmaker.util.SHARED_PREFERENCES_SEARCH
 import com.google.gson.Gson
 import java.lang.reflect.Type
 

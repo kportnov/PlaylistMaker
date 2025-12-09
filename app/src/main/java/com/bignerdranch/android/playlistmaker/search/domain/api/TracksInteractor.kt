@@ -6,7 +6,6 @@ interface TracksInteractor {
     fun searchTracks(expression: String, consumer: TracksConsumer)
 
     interface TracksConsumer {
-        //пока сообщение об причины ошибки не нужно
         fun consume(foundTracks: List<Track>?, errorMessage: String?)
     }
 }
