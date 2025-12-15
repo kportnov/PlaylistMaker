@@ -6,13 +6,13 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.util.Converter
 
-class PlayerViewModel(private val track: Track) : ViewModel() {
+class PlayerViewModel(
+    private val tracksHistoryInteractor: TracksHistoryInteractor
+    ) : ViewModel() {
 
     private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
     fun observePlayerState(): LiveData<Int> = playerStateLiveData
@@ -20,8 +20,8 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
     private val progressTimeLiveData = MutableLiveData(Converter.longToMMSS(0))
     fun observeProgressTime(): LiveData<String?> = progressTimeLiveData
 
-    private val trackLiveData = MutableLiveData(track)
-    fun observeTrackLiveData(): LiveData<Track> = trackLiveData
+    private val trackLiveData = MutableLiveData(getLastTrack())
+    fun observeTrackLiveData(): LiveData<Track?> = trackLiveData
 
     private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
@@ -50,7 +50,7 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
     }
 
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(track.previewUrl)
+        mediaPlayer.setDataSource(getLastTrack()?.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerStateLiveData.postValue(STATE_PREPARED)
@@ -89,6 +89,18 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
 
     fun onPause() {
         pausePlayer()
+    }
+
+
+    //GSON нельзя в PlayerActivity class, чтобы передать track?
+    private fun getLastTrack(): Track? {
+        var track: Track? = null
+        tracksHistoryInteractor.getHistory(object : TracksHistoryInteractor.TracksConsumer {
+            override fun consume(tracks: List<Track>?) {
+                track = tracks?.get(0)
+            }
+        })
+        return track
     }
 
     companion object {

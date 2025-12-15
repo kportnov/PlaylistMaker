@@ -14,19 +14,13 @@ import com.bignerdranch.android.playlistmaker.databinding.ActivityPlayerBinding
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
-
-const val KEY_PLAYER_ACTIVITY = "KEY_PLAYER_ACTIVITY"
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
 
-    private val viewModel: PlayerViewModel by viewModel {
-        parametersOf(getTrack())
-    }
+    private val viewModel: PlayerViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,24 +50,18 @@ class PlayerActivity : AppCompatActivity() {
         binding.buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun getTrack(): Track {
-        val json = intent.getStringExtra(KEY_PLAYER_ACTIVITY)
-        return Gson().fromJson(json, Track::class.java)
-    }
-
-
-    private fun setTrackData(track: Track) {
+    private fun setTrackData(track: Track?) {
         binding.apply {
-            textViewTitle.text = track.trackName
-            textViewArtist.text = track.artistName
-            textViewPrimaryGenreNameValue.text = track.primaryGenreName
-            textViewCountryValue.text = track.country
-            setValueToTextView(textViewDurationValue, groupDuration, track.trackDuration)
-            setValueToTextView(textViewCollectionNameValue, groupCollectionName, track.collectionName)
-            setValueToTextView(textViewReleaseDateValue, groupReleaseDate, track.releaseDate)
+            textViewTitle.text = track?.trackName
+            textViewArtist.text = track?.artistName
+            textViewPrimaryGenreNameValue.text = track?.primaryGenreName
+            textViewCountryValue.text = track?.country
+            setValueToTextView(textViewDurationValue, groupDuration, track?.trackDuration)
+            setValueToTextView(textViewCollectionNameValue, groupCollectionName, track?.collectionName)
+            setValueToTextView(textViewReleaseDateValue, groupReleaseDate, track?.releaseDate)
 
             Glide.with(applicationContext)
-                .load(Converter.getCoverArtwork(track.artworkUrl))
+                .load(Converter.getCoverArtwork(track?.artworkUrl))
                 .placeholder(R.drawable.img_placeholder)
                 .centerInside()
                 .transform(RoundedCorners(Converter.dpToPx(8f, applicationContext)))
