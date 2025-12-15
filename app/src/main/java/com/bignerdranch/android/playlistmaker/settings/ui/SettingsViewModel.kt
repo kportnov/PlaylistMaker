@@ -12,7 +12,6 @@ class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor
 ) : ViewModel() {
 
-
     private val settingsLiveData = MutableLiveData<ThemeSettings>()
     fun observeSettingsLiveData(): LiveData<ThemeSettings> = settingsLiveData
 

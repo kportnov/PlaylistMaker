@@ -36,7 +36,6 @@ val dataModule = module {
         RetrofitNetworkClient(get(), androidContext())
     }
 
-
     //StorageHistory
     factory { Gson() }
 

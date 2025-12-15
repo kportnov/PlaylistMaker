@@ -7,22 +7,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivitySettingsBinding
-import com.bignerdranch.android.playlistmaker.settings.domain.api.SettingsInteractor
-import com.bignerdranch.android.playlistmaker.settings.domain.api.SharingInteractor
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class SettingsActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivitySettingsBinding
-    private val sharingInteractor: SharingInteractor by inject()
-    private val settingsInteractor: SettingsInteractor by inject()
-    private val viewModel: SettingsViewModel by viewModel {
-        parametersOf(sharingInteractor, settingsInteractor)
-    }
-
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +28,7 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.themeSwitcher.isChecked = viewModel.getTheme() ?: false
 
-        binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.manageTheme(checked)
         }
 

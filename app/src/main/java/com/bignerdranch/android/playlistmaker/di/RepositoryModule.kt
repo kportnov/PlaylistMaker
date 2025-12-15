@@ -23,5 +23,4 @@ val repositoryModule = module {
     single<SettingsRepository> {
         SettingsRepositoryImpl(get(named("STORAGE_THEME")), androidContext())
     }
-
 }
