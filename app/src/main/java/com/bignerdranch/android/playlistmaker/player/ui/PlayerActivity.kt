@@ -8,21 +8,19 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivityPlayerBinding
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
-
-const val KEY_PLAYER_ACTIVITY = "KEY_PLAYER_ACTIVITY"
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-    private var viewModel: PlayerViewModel? = null
+
+    private val viewModel: PlayerViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,42 +34,34 @@ class PlayerActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, PlayerViewModel.getFactory(getTrack()))
-            .get(PlayerViewModel::class.java)
 
-        viewModel?.observeTrackLiveData()?.observe(this) {
+        viewModel.observeTrackLiveData().observe(this) {
             setTrackData(it)
         }
-        viewModel?.observePlayerState()?.observe(this) {
+        viewModel.observePlayerState().observe(this) {
             changeButtonImg(it == PlayerViewModel.STATE_PLAYING)
             enableButton(it != PlayerViewModel.STATE_DEFAULT)
         }
-        viewModel?.observeProgressTime()?.observe(this) {
+        viewModel.observeProgressTime().observe(this) {
             binding.textViewCurrentTime.text = it
         }
 
-        binding.btnPlayPause.setOnClickListener { viewModel?.onPlayButtonClicked() }
+        binding.btnPlayPause.setOnClickListener { viewModel.onPlayButtonClicked() }
         binding.buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun getTrack(): Track {
-        val json = intent.getStringExtra(KEY_PLAYER_ACTIVITY)
-        return Gson().fromJson(json, Track::class.java)
-    }
-
-
-    private fun setTrackData(track: Track) {
+    private fun setTrackData(track: Track?) {
         binding.apply {
-            textViewTitle.text = track.trackName
-            textViewArtist.text = track.artistName
-            textViewPrimaryGenreNameValue.text = track.primaryGenreName
-            textViewCountryValue.text = track.country
-            setValueToTextView(textViewDurationValue, groupDuration, track.trackDuration)
-            setValueToTextView(textViewCollectionNameValue, groupCollectionName, track.collectionName)
-            setValueToTextView(textViewReleaseDateValue, groupReleaseDate, track.releaseDate)
+            textViewTitle.text = track?.trackName
+            textViewArtist.text = track?.artistName
+            textViewPrimaryGenreNameValue.text = track?.primaryGenreName
+            textViewCountryValue.text = track?.country
+            setValueToTextView(textViewDurationValue, groupDuration, track?.trackDuration)
+            setValueToTextView(textViewCollectionNameValue, groupCollectionName, track?.collectionName)
+            setValueToTextView(textViewReleaseDateValue, groupReleaseDate, track?.releaseDate)
 
             Glide.with(applicationContext)
-                .load(Converter.getCoverArtwork(track.artworkUrl))
+                .load(Converter.getCoverArtwork(track?.artworkUrl))
                 .placeholder(R.drawable.img_placeholder)
                 .centerInside()
                 .transform(RoundedCorners(Converter.dpToPx(8f, applicationContext)))
@@ -100,6 +90,6 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel?.onPause()
+        viewModel.onPause()
     }
 }
