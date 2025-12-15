@@ -5,15 +5,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivitySettingsBinding
+import com.bignerdranch.android.playlistmaker.settings.domain.api.SettingsInteractor
+import com.bignerdranch.android.playlistmaker.settings.domain.api.SharingInteractor
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SettingsActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivitySettingsBinding
-    private var viewModel: SettingsViewModel? = null
+    private val sharingInteractor: SharingInteractor by inject()
+    private val settingsInteractor: SettingsInteractor by inject()
+    private val viewModel: SettingsViewModel by viewModel {
+        parametersOf(sharingInteractor, settingsInteractor)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,25 +35,22 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory())
-            .get(SettingsViewModel::class.java)
-
-        binding.themeSwitcher.isChecked = viewModel?.getTheme() ?: false
+        binding.themeSwitcher.isChecked = viewModel.getTheme() ?: false
 
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            viewModel?.manageTheme(checked)
+            viewModel.manageTheme(checked)
         }
 
         binding.btnShareTheApp.setOnClickListener {
-            viewModel?.shareApp()
+            viewModel.shareApp()
         }
 
         binding.btnSentToSupport.setOnClickListener {
-            viewModel?.openSupport()
+            viewModel.openSupport()
         }
 
         binding.btnUserAgreement.setOnClickListener {
-            viewModel?.openTerms()
+            viewModel.openTerms()
         }
 
         binding.buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }

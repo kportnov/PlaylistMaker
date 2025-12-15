@@ -23,9 +23,7 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
     private val trackLiveData = MutableLiveData(track)
     fun observeTrackLiveData(): LiveData<Track> = trackLiveData
 
-
     private val mediaPlayer = MediaPlayer()
-
     private val handler = Handler(Looper.getMainLooper())
 
     private val timerRunnable = Runnable {
@@ -98,11 +96,5 @@ class PlayerViewModel(private val track: Track) : ViewModel() {
         const val STATE_PREPARED = 1
         const val STATE_PLAYING = 2
         const val STATE_PAUSED = 3
-
-        fun getFactory(track: Track): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(track)
-            }
-        }
     }
 }

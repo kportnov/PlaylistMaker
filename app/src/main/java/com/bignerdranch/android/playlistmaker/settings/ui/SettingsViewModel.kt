@@ -3,12 +3,6 @@ package com.bignerdranch.android.playlistmaker.settings.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.bignerdranch.android.playlistmaker.PlaylistApplication
-import com.bignerdranch.android.playlistmaker.creator.Creator
 import com.bignerdranch.android.playlistmaker.settings.domain.api.SettingsInteractor
 import com.bignerdranch.android.playlistmaker.settings.domain.api.SharingInteractor
 import com.bignerdranch.android.playlistmaker.settings.domain.model.ThemeSettings
@@ -18,16 +12,6 @@ class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor
 ) : ViewModel() {
 
-    companion object {
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val app = (this[APPLICATION_KEY] as PlaylistApplication)
-                SettingsViewModel(
-                    Creator.provideSharingInteractor(app),
-                    Creator.provideSettingsInteractor(app))
-            }
-        }
-    }
 
     private val settingsLiveData = MutableLiveData<ThemeSettings>()
     fun observeSettingsLiveData(): LiveData<ThemeSettings> = settingsLiveData
