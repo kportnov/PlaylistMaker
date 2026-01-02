@@ -13,20 +13,21 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivitySearchBinding
-import com.bignerdranch.android.playlistmaker.player.ui.KEY_PLAYER_ACTIVITY
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.player.ui.PlayerActivity
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
-import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private var viewModel: SearchViewModel? = null
+    private val viewModel: SearchViewModel by viewModel {
+        parametersOf(applicationContext)
+    }
 
     private val adapter = TrackAdapter { adapterInit(it) }
     private val adapterHistory = TrackAdapter { adapterInit(it) }
@@ -56,44 +57,42 @@ class SearchActivity : AppCompatActivity() {
         binding.history.recyclerSearchHistory.layoutManager = LinearLayoutManager(this)
         binding.history.recyclerSearchHistory.adapter = adapterHistory
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory())
-            .get(SearchViewModel::class.java)
 
-        viewModel?.observeState()?.observe(this) {
+        viewModel.observeState().observe(this) {
             render(it)
         }
 
         binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
             binding.clearIcon.isVisible = !text.isNullOrEmpty()
             if (binding.editTextSearch.hasFocus() && text?.isEmpty() == true) {
-                viewModel?.loadHistory()
+                viewModel.loadHistory()
             } else {
-                viewModel?.searchDebounce(
+                viewModel.searchDebounce(
                     changedText = text.toString()
                 )
             }
         }
 
-        binding.editTextSearch.setOnFocusChangeListener { view, hasFocus ->
+        binding.editTextSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.editTextSearch.text.isEmpty()) {
                 binding.clearIcon.visibility = View.GONE
-                viewModel?.loadHistory()
+                viewModel.loadHistory()
             }
         }
 
         binding.error.btnUpdate.setOnClickListener {
-            viewModel?.searchRequest(binding.editTextSearch.text.toString())
+            viewModel.searchRequest(binding.editTextSearch.text.toString())
         }
 
         binding.clearIcon.setOnClickListener {
             binding.editTextSearch.text.clear()
             binding.clearIcon.visibility = View.GONE
-            viewModel?.loadHistory()
+            viewModel.loadHistory()
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
         }
 
         binding.history.btnClearHistory.setOnClickListener {
-            viewModel?.clearHistory()
+            viewModel.clearHistory()
         }
 
         binding.buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
@@ -101,8 +100,8 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel?.observeState()?.value !is SearchState.Content) {
-            viewModel?.loadHistory()
+        if (viewModel.observeState().value !is SearchState.Content) {
+            viewModel.loadHistory()
         }
     }
 
@@ -113,8 +112,7 @@ class SearchActivity : AppCompatActivity() {
     private fun adapterInit(track: Track) {
         if (clickDebounce()) {
             val intent = Intent(this, PlayerActivity::class.java)
-            intent.putExtra(KEY_PLAYER_ACTIVITY, Gson().toJson(track))
-            viewModel?.addToHistory(track)
+            viewModel.addToHistory(track)
             startActivity(intent)
         }
     }

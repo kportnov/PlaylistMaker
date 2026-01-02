@@ -5,16 +5,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivitySettingsBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivitySettingsBinding
-    private var viewModel: SettingsViewModel? = null
-
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,25 +26,22 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory())
-            .get(SettingsViewModel::class.java)
+        binding.themeSwitcher.isChecked = viewModel.getTheme() ?: false
 
-        binding.themeSwitcher.isChecked = viewModel?.getTheme() ?: false
-
-        binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            viewModel?.manageTheme(checked)
+        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            viewModel.manageTheme(checked)
         }
 
         binding.btnShareTheApp.setOnClickListener {
-            viewModel?.shareApp()
+            viewModel.shareApp()
         }
 
         binding.btnSentToSupport.setOnClickListener {
-            viewModel?.openSupport()
+            viewModel.openSupport()
         }
 
         binding.btnUserAgreement.setOnClickListener {
-            viewModel?.openTerms()
+            viewModel.openTerms()
         }
 
         binding.buttonBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
