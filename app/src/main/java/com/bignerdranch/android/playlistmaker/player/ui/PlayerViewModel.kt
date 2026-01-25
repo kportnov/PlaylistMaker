@@ -3,6 +3,7 @@ package com.bignerdranch.android.playlistmaker.player.ui
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,6 +41,8 @@ class PlayerViewModel(
         super.onCleared()
         mediaPlayer.release()
         resetTimer()
+        Log.i("MYTEST", "onCleared")
+
     }
 
     fun onPlayButtonClicked() {
@@ -59,9 +62,12 @@ class PlayerViewModel(
             playerStateLiveData.postValue(STATE_PREPARED)
             resetTimer()
         }
+        Log.i("MYTEST", "preparePlayer")
+
     }
 
     private fun startPlayer() {
+        Log.i("MYTEST", mediaPlayer.duration.toString())
         mediaPlayer.start()
         playerStateLiveData.postValue(STATE_PLAYING)
         startTimerUpdate()

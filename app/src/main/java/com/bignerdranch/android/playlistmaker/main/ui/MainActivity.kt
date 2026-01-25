@@ -3,10 +3,11 @@ package com.bignerdranch.android.playlistmaker.main.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivityMainBinding
-import com.bignerdranch.android.playlistmaker.media_library.ui.MediaLibraryActivity
-import com.bignerdranch.android.playlistmaker.search.ui.SearchActivity
-import com.bignerdranch.android.playlistmaker.settings.ui.SettingsActivity
+import androidx.core.view.get
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,19 +18,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.buttonSettings .setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        binding.buttonSearch.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
-        }
+        binding.bottomNavigationView.setupWithNavController(navController)
 
-        binding.buttonMediaLibrary.setOnClickListener {
-            val intent = Intent(this, MediaLibraryActivity::class.java)
-            startActivity(intent)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.playerFragment)
+                binding.bottomNavigationView.menu[0].isChecked = true
         }
     }
 }
