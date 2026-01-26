@@ -51,7 +51,6 @@ class PlaylistFragment : Fragment() {
         fun newInstance() =
             PlaylistFragment().apply {
                 arguments = Bundle().apply {
-
                 }
             }
     }

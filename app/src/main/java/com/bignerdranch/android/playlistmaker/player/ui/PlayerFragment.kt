@@ -1,7 +1,6 @@
 package com.bignerdranch.android.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +55,11 @@ class PlayerFragment: Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.onPause()
+    }
+
     private fun setTrackData(track: Track?) {
         binding.apply {
             textViewTitle.text = track?.trackName
@@ -93,41 +97,4 @@ class PlayerFragment: Fragment() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("MYTEST", "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.onPause()
-        Log.i("MYTEST", "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("MYTEST", "onStop")
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.i("MYTEST", "onDestroyView")
-
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.i("MYTEST", "onDetach")
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("MYTEST", "onDestroy")
-
-    }
-
-
 }

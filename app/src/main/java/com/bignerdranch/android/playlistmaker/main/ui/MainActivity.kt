@@ -1,13 +1,12 @@
 package com.bignerdranch.android.playlistmaker.main.ui
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.ActivityMainBinding
-import androidx.core.view.get
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,8 +24,14 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.playerFragment)
-                binding.bottomNavigationView.menu[0].isChecked = true
+            when (destination.id) {
+                R.id.playerFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
         }
     }
 }

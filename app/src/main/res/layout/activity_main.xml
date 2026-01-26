@@ -30,8 +30,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemTextAppearanceActive="@style/BottomNavigationViewStyle"
-        app:itemTextAppearanceInactive="@style/BottomNavigationViewStyle"
-        app:itemTextAppearanceActiveBoldEnabled="false"
+        style="@style/BottomNavigationViewStyle"
         app:menu="@menu/bottom_navigation_items" />
 </androidx.constraintlayout.widget.ConstraintLayout>
