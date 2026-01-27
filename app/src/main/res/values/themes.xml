@@ -6,10 +6,9 @@
         <!-- Primary brand color. -->
         <item name="android:textColor">@color/YP_black</item>
         <item name="iconTint">@color/YP_black</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationViewStyle</item>
+
         <!-- Customize your theme here. -->
-    </style>
-    <style name="Base.Theme.PlaylistMaker.MainScreen" parent="Base.Theme.PlaylistMaker">
-        <item name="android:background">@color/YP_blue</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
