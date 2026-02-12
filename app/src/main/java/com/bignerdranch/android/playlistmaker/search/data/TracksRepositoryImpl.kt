@@ -22,7 +22,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRep
                     Track(
                         it.trackName,
                         it.artistName,
-                        Converter.longToMMSS(it.trackDuration?.toLong()),
+                        Converter.longToMMSS(it.trackDuration?.toLong() ?: 0),
                         it.artworkUrl,
                         it.trackId,
                         it.collectionName,
