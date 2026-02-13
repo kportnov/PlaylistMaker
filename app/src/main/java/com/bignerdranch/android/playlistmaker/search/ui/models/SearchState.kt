@@ -15,10 +15,10 @@ sealed interface SearchState {
     ) : SearchState
 
     data class Error(
-        val errorMessage: String
+        val errorMessageId: Int
     ) : SearchState
 
     data class Empty(
-        val message: String
+        val messageId: Int
     ) : SearchState
 }

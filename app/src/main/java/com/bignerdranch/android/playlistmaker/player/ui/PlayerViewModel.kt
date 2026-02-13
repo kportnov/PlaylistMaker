@@ -50,6 +50,7 @@ class PlayerViewModel(
             playerStateLiveData.postValue(PlayerState.Prepared())
         }
         mediaPlayer.setOnCompletionListener {
+            timerJob?.cancel()
             playerStateLiveData.postValue(PlayerState.Prepared())
         }
     }
@@ -85,16 +86,9 @@ class PlayerViewModel(
         pausePlayer()
     }
 
-
     //GSON нельзя в PlayerActivity class, чтобы передать track?
     private fun getLastTrack(): Track? {
-        var track: Track? = null
-        tracksHistoryInteractor.getHistory(object : TracksHistoryInteractor.TracksConsumer {
-            override fun consume(tracks: List<Track>?) {
-                track = tracks?.get(0)
-            }
-        })
-        return track
+        return tracksHistoryInteractor.getHistory().getOrNull(0)
     }
 
     private fun getCurrentPlayerPosition(): String {

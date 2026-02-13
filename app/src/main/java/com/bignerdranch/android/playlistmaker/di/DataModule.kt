@@ -16,7 +16,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.Executors
 
 private const val ITUNES_SEARCH_BASE_URL = "https://itunes.apple.com"
 private const val THEME_KEY = "THEME"
@@ -39,8 +38,6 @@ val dataModule = module {
 
     //StorageHistory
     factory { Gson() }
-
-    factory { Executors.newCachedThreadPool() }
 
     single {
         androidContext()

@@ -6,11 +6,33 @@ import android.net.NetworkCapabilities
 import com.bignerdranch.android.playlistmaker.search.data.NetworkClient
 import com.bignerdranch.android.playlistmaker.search.data.dto.Response
 import com.bignerdranch.android.playlistmaker.search.data.dto.TracksSearchRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
     private val iTunesService: ITunesApiService,
     private val context: Context
     ): NetworkClient {
+
+    override suspend fun doRequest(dto: Any): Response {
+
+        if (!isConnected()) {
+            return Response().apply { resultCode = -1 }
+        }
+
+        if (dto !is TracksSearchRequest) {
+            return Response().apply { resultCode = 400 }
+        }
+
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = iTunesService.searchTracks(dto.expression)
+                response.apply { resultCode = 200 }
+            } catch (e: Throwable) {
+                Response().apply { resultCode = 500 }
+            }
+        }
+    }
 
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
@@ -24,22 +46,5 @@ class RetrofitNetworkClient(
             }
         }
         return false
-    }
-
-    override fun doRequest(dto: Any): Response {
-
-        if (!isConnected()) {
-            return Response().apply { resultCode = -1 }
-        }
-        if (dto !is TracksSearchRequest) {
-            return Response().apply { resultCode = 400 }
-        }
-
-        val response = iTunesService.searchTracks(dto.expression).execute()
-
-        val body = response.body()
-
-        return body?.apply { resultCode = response.code() } ?:
-            Response().apply { resultCode = response.code() }
     }
 }

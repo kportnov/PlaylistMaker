@@ -24,5 +24,4 @@ class PrefsStorageClient<T>(
             return gson.fromJson(dataJson, type)
         }
     }
-
 }

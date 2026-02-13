@@ -13,7 +13,7 @@ import org.koin.dsl.module
 val interactorModule = module {
 
     single<TracksInteractor> {
-        TracksInteractorImpl(get(), get())
+        TracksInteractorImpl(get())
     }
 
     single<TracksHistoryInteractor> {
