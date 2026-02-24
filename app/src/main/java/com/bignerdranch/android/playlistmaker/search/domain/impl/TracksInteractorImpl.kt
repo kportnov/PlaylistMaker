@@ -2,25 +2,20 @@ package com.bignerdranch.android.playlistmaker.search.domain.impl
 
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksRepository
-import java.util.concurrent.ExecutorService
+import com.bignerdranch.android.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class TracksInteractorImpl(
     private val repository: TracksRepository,
-    private val executor: ExecutorService
     ) : TracksInteractor {
 
-    override fun searchTracks(
-        expression: String,
-        consumer: TracksInteractor.TracksConsumer
-    ) {
-        executor.execute {
-            val resource = repository.searchTracks(expression)
-            if (resource.isSuccess) {
-                consumer.consume(resource.getOrNull(), null)
-            }
-            if (resource.isFailure) {
-                consumer.consume(null, resource.exceptionOrNull()?.message)
-            }
+    override fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>> {
+        return repository.searchTracks(expression).map { result ->
+            result.fold(
+                onSuccess = { Pair(result.getOrNull(), null) },
+                onFailure = { Pair(null, result.exceptionOrNull()?.message) }
+            )
         }
     }
 }

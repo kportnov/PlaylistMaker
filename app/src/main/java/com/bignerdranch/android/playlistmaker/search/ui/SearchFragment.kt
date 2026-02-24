@@ -1,29 +1,27 @@
 package com.bignerdranch.android.playlistmaker.search.ui
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentSearchBinding
+import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
+import com.bignerdranch.android.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
-import kotlin.text.clear
 import kotlin.toString
 
 class SearchFragment: Fragment() {
@@ -34,11 +32,9 @@ class SearchFragment: Fragment() {
         parametersOf(context)
     }
 
-    private val adapter = TrackAdapter { adapterInit(it) }
-    private val adapterHistory = TrackAdapter { adapterInit(it) }
-    private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
-
+    private lateinit var adapter: TrackAdapter
+    private lateinit var adapterHistory: TrackAdapter
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +49,21 @@ class SearchFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val inputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+
+        adapter = TrackAdapter { track ->
+            (activity as MainActivity).animateBottomNavigationView()
+            onTrackClickDebounce(track)
+        }
+
+        adapterHistory = TrackAdapter { track ->
+            (activity as MainActivity).animateBottomNavigationView()
+            onTrackClickDebounce(track)
+        }
+
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+            viewModel.addToHistory(track)
+            findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
+        }
 
         binding.recyclerSearch.layoutManager = LinearLayoutManager(
             requireContext(),
@@ -115,22 +126,6 @@ class SearchFragment: Fragment() {
     }
 
 
-    private fun adapterInit(track: Track) {
-        if (clickDebounce()) {
-            viewModel.addToHistory(track)
-            findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
-        }
-    }
-
-    private fun clickDebounce() : Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
     private fun showLoading() {
         binding.apply {
             recyclerSearch.visibility = View.GONE
@@ -166,13 +161,13 @@ class SearchFragment: Fragment() {
         adapterHistory.notifyDataSetChanged()
     }
 
-    private fun showConnectionError(message: String) {
+    private fun showConnectionError(messageId: Int) {
         binding.apply {
             recyclerSearch.visibility = View.GONE
             history.viewGroupSearchHistory.visibility = View.GONE
             progressBar.visibility = View.GONE
             error.viewGroupError.visibility = View.VISIBLE
-            error.textViewError.text = message
+            error.textViewError.text = getString(messageId)
             error.imageViewError.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),
@@ -182,14 +177,14 @@ class SearchFragment: Fragment() {
         }
     }
 
-    private fun showEmpty(message: String) {
+    private fun showEmpty(messageId: Int) {
         binding.apply {
             recyclerSearch.visibility = View.GONE
             progressBar.visibility = View.GONE
             history.viewGroupSearchHistory.visibility = View.GONE
             error.viewGroupError.visibility = View.VISIBLE
             error.btnUpdate.visibility = View.GONE
-            error.textViewError.text = message
+            error.textViewError.text = getString(messageId)
             error.imageViewError.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),
@@ -204,8 +199,8 @@ class SearchFragment: Fragment() {
             is SearchState.Loading -> showLoading()
             is SearchState.Content -> showContent(state.tracks)
             is SearchState.History -> showHistory(state.tracks)
-            is SearchState.Error -> showConnectionError(state.errorMessage)
-            is SearchState.Empty -> showEmpty(state.message)
+            is SearchState.Error -> showConnectionError(state.errorMessageId)
+            is SearchState.Empty -> showEmpty(state.messageId)
         }
     }
 

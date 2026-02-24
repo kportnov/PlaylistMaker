@@ -14,10 +14,8 @@ object Converter {
         ).toInt()
     }
 
-    fun longToMMSS(value: Long?): String? {
-        return if (value != null) {
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(value)
-        } else null
+    fun longToMMSS(value: Long): String {
+        return  SimpleDateFormat("mm:ss", Locale.getDefault()).format(value)
     }
 
     fun dateToYear(value: String?): String? {

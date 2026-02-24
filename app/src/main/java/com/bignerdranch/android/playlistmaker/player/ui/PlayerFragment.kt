@@ -42,11 +42,11 @@ class PlayerFragment: Fragment() {
             setTrackData(it)
         }
         viewModel.observePlayerState().observe(viewLifecycleOwner) {
-            changeButtonImg(it == PlayerViewModel.STATE_PLAYING)
-            enableButton(it != PlayerViewModel.STATE_DEFAULT)
-        }
-        viewModel.observeProgressTime().observe(viewLifecycleOwner) {
-            binding.textViewCurrentTime.text = it
+            binding.btnPlayPause.apply {
+                isEnabled = it.isPlayButtonEnabled
+                setImageDrawable(AppCompatResources.getDrawable(context,it.buttonImageId))
+            }
+            binding.textViewCurrentTime.text = it.progress
         }
 
         binding.btnPlayPause.setOnClickListener { viewModel.onPlayButtonClicked() }
@@ -82,19 +82,5 @@ class PlayerFragment: Fragment() {
     private fun setValueToTextView(textView: TextView, group: Group, value: String?) {
         group.isVisible = !value.isNullOrEmpty()
         textView.text = value
-    }
-
-    private fun enableButton(isEnabled: Boolean) {
-        binding.btnPlayPause.isEnabled = isEnabled
-    }
-
-    private fun changeButtonImg(isPlaying: Boolean) {
-        binding.btnPlayPause.apply {
-            if (isPlaying) {
-                setImageDrawable(AppCompatResources.getDrawable(context,R.drawable.ic_pause))
-            } else {
-                setImageDrawable(AppCompatResources.getDrawable(context,R.drawable.ic_play))
-            }
-        }
     }
 }
