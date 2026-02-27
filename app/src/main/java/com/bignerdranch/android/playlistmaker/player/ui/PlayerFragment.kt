@@ -37,20 +37,14 @@ class PlayerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observeTrackLiveData().observe(viewLifecycleOwner) {
-            setTrackData(it)
-        }
-
-        viewModel.observePlayerState().observe(viewLifecycleOwner) {
+        viewModel.observePlayerState().observe(viewLifecycleOwner) { state ->
+            setTrackData(state.track)
             binding.btnPlayPause.apply {
-                isEnabled = it.isPlayButtonEnabled
-                setImageDrawable(AppCompatResources.getDrawable(context,it.buttonImageId))
+                isEnabled = state.isPlayButtonEnabled
+                setImageDrawable(AppCompatResources.getDrawable(context,state.buttonImageId))
             }
-            binding.textViewCurrentTime.text = it.progress
-        }
-
-        viewModel.observeFavoriteLiveData().observe(viewLifecycleOwner) {
-            setFavoriteIcon(it)
+            binding.textViewCurrentTime.text = state.progress
+            setFavoriteIcon(state.track?.isFavorite)
         }
 
         binding.btnPlayPause.setOnClickListener { viewModel.onPlayButtonClicked() }

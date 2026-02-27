@@ -5,7 +5,7 @@ import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesR
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.util.Converter
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class FavoritesRepositoryImpl(
     private val appDatabase: AppDatabase
@@ -18,9 +18,10 @@ class FavoritesRepositoryImpl(
         appDatabase.trackDao().deleteTrack(Converter.trackToEntity(track))
     }
 
-    override fun getFavorites(): Flow<List<Track>> = flow {
-        val favorites = appDatabase.trackDao().getTracks()
-        emit(convertFromTrackEntity(favorites))
+    override suspend fun getFavorites(): Flow<List<Track>> {
+        return appDatabase.trackDao().getTracks().map {
+            trackEntities -> convertFromTrackEntity(trackEntities)
+        }
     }
 
     private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
