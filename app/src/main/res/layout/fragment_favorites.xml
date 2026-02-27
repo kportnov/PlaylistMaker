@@ -5,6 +5,13 @@
     android:orientation="vertical"
     tools:context=".media_library.ui.FavoritesFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+    </androidx.recyclerview.widget.RecyclerView>
+
     <include layout="@layout/media_library_empty"
         android:id="@+id/error"/>
 

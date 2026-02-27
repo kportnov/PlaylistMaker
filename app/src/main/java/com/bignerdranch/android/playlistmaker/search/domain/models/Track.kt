@@ -7,10 +7,11 @@ data class Track (
     val artistName: String,
     @SerializedName("trackTimeMillis") val trackDuration: String?,
     @SerializedName("artworkUrl100") val artworkUrl: String?,
-    val trackId: String,
+    val id: String,
     val collectionName: String?,
     val releaseDate: String?,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String
+    val previewUrl: String,
+    var isFavorite: Boolean = false
 )

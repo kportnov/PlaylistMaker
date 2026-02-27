@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesInteractor
 import com.bignerdranch.android.playlistmaker.player.ui.model.PlayerState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
@@ -14,20 +15,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val tracksHistoryInteractor: TracksHistoryInteractor
+    private val tracksHistoryInteractor: TracksHistoryInteractor,
+    private val favoritesInteractor: FavoritesInteractor
     ) : ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
-    private val trackLiveData = MutableLiveData(getLastTrack())
-    fun observeTrackLiveData(): LiveData<Track?> = trackLiveData
+    private val trackLiveData = MutableLiveData<Track>()
+    fun observeTrackLiveData(): LiveData<Track> = trackLiveData
+
+    private val favoriteLiveData = MutableLiveData<Boolean>()
+    fun observeFavoriteLiveData(): LiveData<Boolean> = favoriteLiveData
 
     private val mediaPlayer = MediaPlayer()
     private var timerJob: Job? = null
 
     init {
-        initMediaPlayer()
+        viewModelScope.launch {
+            tracksHistoryInteractor.getHistory().collect {
+                trackLiveData.value = it[0]
+            }
+            initMediaPlayer()
+        }
     }
 
     override fun onCleared() {
@@ -44,7 +54,7 @@ class PlayerViewModel(
     }
 
     private fun initMediaPlayer() {
-        mediaPlayer.setDataSource(getLastTrack()?.previewUrl)
+        mediaPlayer.setDataSource(trackLiveData.value?.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerStateLiveData.postValue(PlayerState.Prepared())
@@ -87,12 +97,28 @@ class PlayerViewModel(
         pausePlayer()
     }
 
-    //GSON нельзя в PlayerActivity class, чтобы передать track?
-    private fun getLastTrack(): Track? {
-        return tracksHistoryInteractor.getHistory().getOrNull(0)
-    }
-
     private fun getCurrentPlayerPosition(): String {
         return Converter.longToMMSS(mediaPlayer.currentPosition.toLong())
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            val track = trackLiveData.value
+
+            if (track != null) {
+                val updatedTrack = track.copy(isFavorite = !track.isFavorite)
+                if (updatedTrack.isFavorite) {
+                    favoritesInteractor.addToFavorites(updatedTrack)
+                } else {
+                    favoritesInteractor.deleteFromFavorites(updatedTrack)
+                }
+                trackLiveData.value = updatedTrack
+
+                // Теоретически, можно будет post весь updated track, тогда можно будет обойтись без favoriteLiveData
+                // Но тогда будет перерисовывать всё. Не знаю, как лучше
+
+                favoriteLiveData.postValue(updatedTrack.isFavorite)
+            }
+        }
     }
 }

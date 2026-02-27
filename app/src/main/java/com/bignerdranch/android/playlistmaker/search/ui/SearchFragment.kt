@@ -86,7 +86,7 @@ class SearchFragment: Fragment() {
         binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
             binding.clearIcon.isVisible = !text.isNullOrEmpty()
             if (binding.editTextSearch.hasFocus() && text?.isEmpty() == true) {
-                viewModel.loadHistory()
+                viewModel.getHistory()
             } else {
                 viewModel.searchDebounce(
                     changedText = text.toString()
@@ -97,7 +97,7 @@ class SearchFragment: Fragment() {
         binding.editTextSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.editTextSearch.text.isEmpty()) {
                 binding.clearIcon.visibility = View.GONE
-                viewModel.loadHistory()
+                viewModel.getHistory()
             }
         }
 
@@ -108,7 +108,7 @@ class SearchFragment: Fragment() {
         binding.clearIcon.setOnClickListener {
             binding.editTextSearch.text.clear()
             binding.clearIcon.visibility = View.GONE
-            viewModel.loadHistory()
+            viewModel.getHistory()
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
         }
 
@@ -121,7 +121,7 @@ class SearchFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         if (viewModel.observeState().value !is SearchState.Content) {
-            viewModel.loadHistory()
+            viewModel.getHistory()
         }
     }
 

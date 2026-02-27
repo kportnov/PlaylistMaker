@@ -2,8 +2,11 @@ package com.bignerdranch.android.playlistmaker.util
 
 import android.content.Context
 import android.util.TypedValue
+import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.TrackEntity
+import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.String
 
 object Converter {
     fun dpToPx(dp: Float, context: Context): Int {
@@ -24,5 +27,35 @@ object Converter {
 
     fun getCoverArtwork(artworkUrl100: String?): String? {
         return artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
+    }
+
+
+    fun trackToEntity(track: Track): TrackEntity {
+        return TrackEntity(
+             track.id,
+            track.artworkUrl,
+            track.trackName,
+            track.artistName,
+            track.collectionName,
+            track.releaseDate,
+            track.primaryGenreName,
+            track.country,
+            track.trackDuration,
+            track.previewUrl)
+    }
+
+    fun entityToTrack(track: TrackEntity): Track {
+        return Track(
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackDuration =  track.trackDuration,
+            artworkUrl = track.artworkUrl,
+            id = track.trackId,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
     }
 }

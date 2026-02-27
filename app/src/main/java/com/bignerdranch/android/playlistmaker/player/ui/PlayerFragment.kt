@@ -22,7 +22,6 @@ import kotlin.getValue
 class PlayerFragment: Fragment() {
 
     private lateinit var binding: FragmentPlayerBinding
-
     private val viewModel: PlayerViewModel by viewModel()
 
 
@@ -41,6 +40,7 @@ class PlayerFragment: Fragment() {
         viewModel.observeTrackLiveData().observe(viewLifecycleOwner) {
             setTrackData(it)
         }
+
         viewModel.observePlayerState().observe(viewLifecycleOwner) {
             binding.btnPlayPause.apply {
                 isEnabled = it.isPlayButtonEnabled
@@ -49,7 +49,16 @@ class PlayerFragment: Fragment() {
             binding.textViewCurrentTime.text = it.progress
         }
 
+        viewModel.observeFavoriteLiveData().observe(viewLifecycleOwner) {
+            setFavoriteIcon(it)
+        }
+
         binding.btnPlayPause.setOnClickListener { viewModel.onPlayButtonClicked() }
+
+        binding.imBtnFavorite.setOnClickListener {
+            viewModel.onFavoriteClicked()
+        }
+
         binding.buttonBack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -69,7 +78,7 @@ class PlayerFragment: Fragment() {
             setValueToTextView(textViewDurationValue, groupDuration, track?.trackDuration)
             setValueToTextView(textViewCollectionNameValue, groupCollectionName, track?.collectionName)
             setValueToTextView(textViewReleaseDateValue, groupReleaseDate, track?.releaseDate)
-
+            setFavoriteIcon(track?.isFavorite)
             Glide.with(requireContext())
                 .load(Converter.getCoverArtwork(track?.artworkUrl))
                 .placeholder(R.drawable.img_placeholder)
@@ -82,5 +91,13 @@ class PlayerFragment: Fragment() {
     private fun setValueToTextView(textView: TextView, group: Group, value: String?) {
         group.isVisible = !value.isNullOrEmpty()
         textView.text = value
+    }
+
+    private fun setFavoriteIcon(isFavorite: Boolean?) {
+        if (isFavorite == true) {
+            binding.imBtnFavorite.setImageDrawable(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_favorite_clicked))
+        } else {
+            binding.imBtnFavorite.setImageDrawable(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_favorite))
+        }
     }
 }

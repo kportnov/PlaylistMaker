@@ -50,7 +50,6 @@ class SearchViewModel(
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
-
             viewModelScope.launch {
                 tracksInteractor.searchTracks(newSearchText).collect { pair ->
                     processResult(pair.first, pair.second)
@@ -78,11 +77,18 @@ class SearchViewModel(
         }
     }
 
-    fun loadHistory() {
-        val historyList = mutableListOf<Track>()
-        historyList.addAll(tracksHistoryInteractor.getHistory())
-        if (historyList.isEmpty()) {
-            renderState(SearchState.Content(historyList))
+    fun getHistory() {
+        viewModelScope.launch {
+            tracksHistoryInteractor.getHistory()
+                .collect { tracks ->
+                    processHistoryResult(tracks)
+                }
+        }
+    }
+
+    private fun processHistoryResult(historyList: List<Track>?) {
+        if (historyList == null || historyList.isEmpty()) {
+            renderState(SearchState.Content(emptyList()))
         } else {
             renderState(SearchState.History(historyList))
         }

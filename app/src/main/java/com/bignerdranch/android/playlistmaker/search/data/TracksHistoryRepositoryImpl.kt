@@ -1,18 +1,24 @@
 package com.bignerdranch.android.playlistmaker.search.data
 
+import com.bignerdranch.android.playlistmaker.media_library.data.db.AppDatabase
 import com.bignerdranch.android.playlistmaker.search.data.dto.TrackHistoryDto
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryRepository
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 private const val MAXIMUM_SEARCH_HISTORY_ITEMS = 10
 class TracksHistoryRepositoryImpl(
-    private val storage: StorageClient<ArrayList<TrackHistoryDto>>): TracksHistoryRepository {
+    private val storage: StorageClient<ArrayList<TrackHistoryDto>>,
+    private val appDatabase: AppDatabase
+    ): TracksHistoryRepository {
 
     override fun addToHistory(track: Track) {
-        val tracks = getHistory().toMutableList()
 
-        if (tracks.map { it.trackId }.contains(track.trackId)) {
-            tracks.remove(tracks.find { it.trackId == track.trackId })
+        val tracks = getHistoryList().toMutableList()
+
+        if (tracks.map { it.id }.contains(track.id)) {
+            tracks.remove(tracks.find { it.id == track.id })
             tracks.add(0,track)
         } else {
             tracks.add(0,track)
@@ -30,7 +36,7 @@ class TracksHistoryRepositoryImpl(
                 it.artistName,
                 it.trackDuration,
                 it.artworkUrl,
-                it.trackId,
+                it.id,
                 it.collectionName,
                 it.releaseDate,
                 it.primaryGenreName,
@@ -41,7 +47,20 @@ class TracksHistoryRepositoryImpl(
         storage.storeData(ArrayList(dto))
     }
 
-    override fun getHistory(): List<Track> {
+    override fun getHistory(): Flow<List<Track>> = flow {
+        val favoritesIds = appDatabase.trackDao().getTracksId()
+        val data = getHistoryList()
+        data.forEach {
+            it.isFavorite = favoritesIds.contains(it.id)
+        }
+        emit(data)
+    }
+
+    override fun clearHistory() {
+        storage.storeData(arrayListOf())
+    }
+
+    private fun getHistoryList(): List<Track> {
         return storage.getData()?.map {
             Track(
                 it.trackName,
@@ -53,12 +72,7 @@ class TracksHistoryRepositoryImpl(
                 it.releaseDate,
                 it.primaryGenreName,
                 it.country,
-                it.previewUrl
-            )
+                it.previewUrl)
         } ?: listOf()
-    }
-
-    override fun clearHistory() {
-        storage.storeData(arrayListOf())
     }
 }
