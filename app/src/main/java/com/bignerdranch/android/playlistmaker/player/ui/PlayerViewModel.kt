@@ -5,29 +5,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesInteractor
 import com.bignerdranch.android.playlistmaker.player.ui.model.PlayerState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
-import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.util.Converter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val tracksHistoryInteractor: TracksHistoryInteractor
+    private val mediaPlayer: MediaPlayer,
+    private val tracksHistoryInteractor: TracksHistoryInteractor,
+    private val favoritesInteractor: FavoritesInteractor
     ) : ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
-
-    private val trackLiveData = MutableLiveData(getLastTrack())
-    fun observeTrackLiveData(): LiveData<Track?> = trackLiveData
-
-    private val mediaPlayer = MediaPlayer()
     private var timerJob: Job? = null
 
     init {
-        initMediaPlayer()
+        viewModelScope.launch {
+            val history = tracksHistoryInteractor.getHistory().firstOrNull()
+            val track = history?.firstOrNull()
+            playerStateLiveData.value = PlayerState.Default(track)
+            initMediaPlayer()
+        }
     }
 
     override fun onCleared() {
@@ -44,27 +47,38 @@ class PlayerViewModel(
     }
 
     private fun initMediaPlayer() {
-        mediaPlayer.setDataSource(getLastTrack()?.previewUrl)
+        val track = playerStateLiveData.value?.track
+        mediaPlayer.setDataSource(track?.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(PlayerState.Prepared())
+            track?.let {
+                playerStateLiveData.postValue(PlayerState.Prepared(it))
+            }
         }
         mediaPlayer.setOnCompletionListener {
             timerJob?.cancel()
-            playerStateLiveData.postValue(PlayerState.Prepared())
+            track?.let {
+                playerStateLiveData.postValue(PlayerState.Prepared(it))
+            }
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
-        playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
+        val track = playerStateLiveData.value?.track
+        track?.let {
+            playerStateLiveData.postValue(PlayerState.Playing(it,getCurrentPlayerPosition()))
+        }
         startTimer()
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
         timerJob?.cancel()
-        playerStateLiveData.postValue(PlayerState.Paused(getCurrentPlayerPosition()))
+        val track = playerStateLiveData.value?.track
+        track?.let {
+            playerStateLiveData.postValue(PlayerState.Paused(it,getCurrentPlayerPosition()))
+        }
     }
 
     private fun releasePlayer() {
@@ -74,10 +88,14 @@ class PlayerViewModel(
     }
 
     private fun startTimer() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (mediaPlayer.isPlaying) {
                 delay(300L)
-                playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
+                val track = playerStateLiveData.value?.track
+                track?.let {
+                    playerStateLiveData.postValue(PlayerState.Playing(it,getCurrentPlayerPosition()))
+                }
             }
         }
     }
@@ -86,12 +104,30 @@ class PlayerViewModel(
         pausePlayer()
     }
 
-    //GSON нельзя в PlayerActivity class, чтобы передать track?
-    private fun getLastTrack(): Track? {
-        return tracksHistoryInteractor.getHistory().getOrNull(0)
-    }
-
     private fun getCurrentPlayerPosition(): String {
         return Converter.longToMMSS(mediaPlayer.currentPosition.toLong())
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            val track = playerStateLiveData.value?.track
+
+            if (track != null) {
+                val updatedTrack = track.copy(isFavorite = !track.isFavorite)
+                if (updatedTrack.isFavorite) {
+                    favoritesInteractor.addToFavorites(updatedTrack)
+                } else {
+                    favoritesInteractor.deleteFromFavorites(updatedTrack)
+                }
+
+                playerStateLiveData.value = when (val state = playerStateLiveData.value) {
+                    is PlayerState.Default -> PlayerState.Default(updatedTrack)
+                    is PlayerState.Prepared -> PlayerState.Prepared(updatedTrack)
+                    is PlayerState.Playing -> PlayerState.Playing(updatedTrack, state.progress)
+                    is PlayerState.Paused -> PlayerState.Paused(updatedTrack, state.progress)
+                    else -> state
+                }
+            }
+        }
     }
 }
