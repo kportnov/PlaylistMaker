@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.navigation.fragment.findNavController
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentPlaylistBinding
 import com.bignerdranch.android.playlistmaker.media_library.presentation.PlaylistsViewModel
@@ -28,6 +29,10 @@ class PlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setEmptyMessage()
+
+        binding.error.btnNewPlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaLibraryFragment_to_createPlaylistFragment)
+        }
     }
 
 
