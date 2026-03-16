@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker.media_library.ui
+package com.bignerdranch.android.playlistmaker.media_library.ui.models
 
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 

@@ -43,6 +43,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="26dp"
         android:scaleType="center"
+        android:clipToOutline="true"
         android:src="@drawable/ic_add_playlist"
         android:background="@drawable/shape_rounded_rectangle_dashed"
         app:layout_constraintDimensionRatio="1:1"

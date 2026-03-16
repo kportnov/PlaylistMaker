@@ -1,7 +1,9 @@
 package com.bignerdranch.android.playlistmaker.di
 
 import com.bignerdranch.android.playlistmaker.media_library.data.db.FavoritesRepositoryImpl
+import com.bignerdranch.android.playlistmaker.media_library.data.db.PlaylistsRepositoryImpl
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesRepository
+import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsRepository
 import com.bignerdranch.android.playlistmaker.search.data.TracksHistoryRepositoryImpl
 import com.bignerdranch.android.playlistmaker.search.data.TracksRepositoryImpl
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryRepository
@@ -28,5 +30,9 @@ val repositoryModule = module {
 
     single<FavoritesRepository> {
         FavoritesRepositoryImpl(get())
+    }
+
+    single<PlaylistsRepository> {
+        PlaylistsRepositoryImpl(get(), get())
     }
 }

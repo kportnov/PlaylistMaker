@@ -13,6 +13,7 @@ import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentFavoritesBinding
 import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.media_library.presentation.FavoritesViewModel
+import com.bignerdranch.android.playlistmaker.media_library.ui.models.FavoritesState
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.ui.TrackAdapter
 import com.bignerdranch.android.playlistmaker.util.debounce
@@ -64,8 +65,8 @@ class FavoritesFragment : Fragment() {
     private fun showEmpty(messageId: Int) {
         context?.let {
             binding.recyclerSearch.visibility = View.GONE
+
             binding.error.apply {
-                btnNewPlaylist.visibility = View.INVISIBLE
                 imageViewError.visibility = View.VISIBLE
                 textViewMessage.visibility = View.VISIBLE
                 imageViewError.setImageDrawable(
@@ -83,7 +84,6 @@ class FavoritesFragment : Fragment() {
         binding.apply {
             recyclerSearch.visibility = View.VISIBLE
             binding.error.apply {
-                btnNewPlaylist.visibility = View.GONE
                 imageViewError.visibility = View.GONE
                 textViewMessage.visibility = View.GONE
             }

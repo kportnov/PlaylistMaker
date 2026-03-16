@@ -49,8 +49,8 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="iconPadding">0dp</item>
         <item name="iconGravity">textStart</item>
-        <item name="iconTint">@color/white</item>
         <item name="tint">@color/white</item>
+        <item name="iconTint">@color/white</item>
     </style>
 
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
@@ -150,4 +150,10 @@
         <item name="android:background">@drawable/shape_rounded_rectangle_edit_text</item>
     </style>
 
+    <style name="TextViewPlaylistCardStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+
+    </style>
 </resources>

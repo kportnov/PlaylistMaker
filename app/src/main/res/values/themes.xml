@@ -7,9 +7,17 @@
         <item name="android:textColor">@color/YP_black</item>
         <item name="iconTint">@color/YP_black</item>
         <item name="bottomNavigationStyle">@style/BottomNavigationViewStyle</item>
-
         <!-- Customize your theme here. -->
+
     </style>
+    <style name="AlertDialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/YP_blue</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="materialButtonStyle">@style/AlertDialogButtonStyle</item>
+    </style>
+
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 </resources>

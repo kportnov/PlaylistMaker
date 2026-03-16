@@ -6,7 +6,9 @@
         android:color="@color/YP_text_gray"
         android:width="1dp"
         android:dashWidth="30dp"
-        android:dashGap="30dp"/>
+        android:dashGap="30dp"
+        android:strokeLineCap="round"
+        />
 
     <corners android:radius="8dp" />
 </shape>
