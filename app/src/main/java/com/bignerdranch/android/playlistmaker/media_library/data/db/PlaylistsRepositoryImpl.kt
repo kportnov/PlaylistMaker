@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.PlaylistEntity
 import com.bignerdranch.android.playlistmaker.media_library.data.dto.PlaylistDto
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsRepository
@@ -64,7 +63,6 @@ class PlaylistsRepositoryImpl(
             tracksIds = updatedTracksIds,
             tracksNumber = playlist.tracksNumber + 1
         )
-        Log.i("MYTEST", "TRACKS NUMBER = ${playlistDto.tracksNumber}")
         appDatabase.playlistDao().updatePlaylist(Converter.playlistDtoToEntity(playlistDto))
         appDatabase.trackInPlaylistDao().insertTrack(Converter.trackToTrackInPlaylistEntity(track))
     }

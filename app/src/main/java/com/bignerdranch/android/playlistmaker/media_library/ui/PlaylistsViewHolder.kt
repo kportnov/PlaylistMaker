@@ -1,7 +1,6 @@
 package com.bignerdranch.android.playlistmaker.media_library.ui
 
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import java.io.File
 
 class PlaylistsViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -33,7 +31,7 @@ class PlaylistsViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         val tracksText = itemView.context.resources.getQuantityString(
             R.plurals.tracks_count,
-            playlist.tracksNumber.toInt(),
+            playlist.tracksNumber,
             playlist.tracksNumber)
 
         title.text = playlist.playlistName

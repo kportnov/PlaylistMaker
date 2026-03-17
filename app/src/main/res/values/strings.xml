@@ -32,6 +32,12 @@
     <string name="no_playlist_has_been_created">Вы не создали \nни одного плейлиста</string>
     <string name="favourites">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+    <string name="playlist_name_created">Плейлист %1$s создан</string>
+    <string name="confirm_checklist_is_completed">Завершить создание плейлиста?</string>
+    <string name="all_data_will_be_lost">Все несохраненные данные будут потеряны</string>
+    <string name="cancel">Отмена</string>
+    <string name="finish">Завершить</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
     <plurals name="tracks_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>

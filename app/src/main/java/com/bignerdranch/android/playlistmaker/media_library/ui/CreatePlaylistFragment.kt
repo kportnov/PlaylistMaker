@@ -1,38 +1,25 @@
 package com.bignerdranch.android.playlistmaker.media_library.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.bignerdranch.android.playlistmaker.media_library.presentation.CreatePlaylistViewModel
-import com.bignerdranch.android.playlistmaker.media_library.presentation.PlaylistsViewModel
 import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 import kotlin.getValue
 
 class CreatePlaylistFragment: Fragment() {
@@ -81,20 +68,20 @@ class CreatePlaylistFragment: Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        binding.editTextName.doOnTextChanged { text, start, before, count ->
+        binding.editTextName.doOnTextChanged { text, _, _, _ ->
             binding.btnCreate.isEnabled = !text.isNullOrEmpty()
             viewModel.updateTitle(text.toString())
         }
-        binding.editTextDescription.doOnTextChanged { text, start, before, count ->
+        binding.editTextDescription.doOnTextChanged { text, _, _, _ ->
             viewModel.updateDescription(text.toString())
         }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { dialog, which ->
+            .setTitle(getString(R.string.confirm_checklist_is_completed))
+            .setMessage(getString(R.string.all_data_will_be_lost))
+            .setNeutralButton(getString(R.string.cancel)) { _, _ ->
 
-            }.setPositiveButton("Завершить") { dialog, which ->
+            }.setPositiveButton(getString(R.string.finish)) { _, _ ->
                 findNavController().popBackStack()
             }
 
@@ -118,7 +105,10 @@ class CreatePlaylistFragment: Fragment() {
             viewModel.createPlaylist()
             Toast.makeText(
                 requireContext(),
-                "Плейлист ${viewModel.observeCreatePlaylistState.value?.title} создан",
+                getString(
+                    R.string.playlist_name_created,
+                    viewModel.observeCreatePlaylistState.value?.title
+                ),
                 Toast.LENGTH_LONG)
                 .show()
             findNavController().popBackStack()

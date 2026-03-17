@@ -2,7 +2,6 @@ package com.bignerdranch.android.playlistmaker.util
 
 import android.content.Context
 import android.util.TypedValue
-import androidx.room.TypeConverter
 import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.PlaylistEntity
 import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.TrackEntity
 import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.TrackInPlaylistEntity

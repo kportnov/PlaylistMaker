@@ -9,7 +9,6 @@ import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playli
 import com.bignerdranch.android.playlistmaker.player.ui.model.AddTrackState
 import com.bignerdranch.android.playlistmaker.player.ui.model.PlaylistsUiState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
-import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlin.collections.firstOrNull

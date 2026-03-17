@@ -47,6 +47,8 @@ class PlaylistFragment : Fragment() {
 
 
     private fun showEmpty() {
+        binding.error.viewGroupError.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
         context?.let {
             binding.error.apply {
                 imageViewError.setImageDrawable(
@@ -61,6 +63,8 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun showPlaylists(playlists: List<Playlist>) {
+        binding.error.viewGroupError.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
         binding.recyclerView.adapter = PlaylistsAdapter(playlists)
         binding.recyclerView.adapter?.notifyDataSetChanged()
     }

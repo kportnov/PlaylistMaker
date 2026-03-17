@@ -65,7 +65,7 @@ class FavoritesFragment : Fragment() {
     private fun showEmpty(messageId: Int) {
         context?.let {
             binding.recyclerSearch.visibility = View.GONE
-
+            binding.upperSpace.visibility = View.VISIBLE
             binding.error.apply {
                 imageViewError.visibility = View.VISIBLE
                 textViewMessage.visibility = View.VISIBLE
@@ -81,7 +81,9 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun showContent(tracks: List<Track>) {
+
         binding.apply {
+            upperSpace.visibility = View.GONE
             recyclerSearch.visibility = View.VISIBLE
             binding.error.apply {
                 imageViewError.visibility = View.GONE
