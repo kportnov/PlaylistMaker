@@ -33,7 +33,6 @@ class PlayerFragment: Fragment() {
     private lateinit var binding: FragmentPlayerBinding
     private val playerViewModel: PlayerViewModel by viewModel()
     private val bottomSheetViewModel: BottomSheetViewModel by viewModel()
-
     private lateinit var adapterBottomSheet: PlaylistsBSAdapter
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 

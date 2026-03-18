@@ -69,8 +69,10 @@ class CreatePlaylistFragment: Fragment() {
         }
 
         binding.editTextName.doOnTextChanged { text, _, _, _ ->
-            binding.btnCreate.isEnabled = !text.isNullOrEmpty()
-            viewModel.updateTitle(text.toString())
+            val value = text?.toString()?.trim().orEmpty()
+
+            binding.btnCreate.isEnabled = value.isNotEmpty()
+            viewModel.updateTitle(value)
         }
         binding.editTextDescription.doOnTextChanged { text, _, _, _ ->
             viewModel.updateDescription(text.toString())

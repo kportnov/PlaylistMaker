@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentPlaylistBinding
+import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
 import com.bignerdranch.android.playlistmaker.media_library.presentation.PlaylistsViewModel
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.PlaylistsState
@@ -40,6 +41,7 @@ class PlaylistFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         binding.btnNewPlaylist.setOnClickListener {
+            (activity as MainActivity).animateBottomNavigationView()
             findNavController().navigate(R.id.action_mediaLibraryFragment_to_createPlaylistFragment)
         }
     }
