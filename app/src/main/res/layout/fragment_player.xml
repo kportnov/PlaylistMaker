@@ -1,297 +1,358 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".player.ui.PlayerFragment">
+    android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/button_back"
-        style="@style/ButtonBackNavigationStyle"
-        android:layout_width="@dimen/back_button_size"
-        android:layout_height="@dimen/back_button_size"
-        android:layout_margin="4dp"
-        android:src="@drawable/ic_back_arrow_48"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_activity_player"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".player.ui.PlayerFragment">
+
+        <ImageButton
+            android:id="@+id/button_back"
+            style="@style/ButtonBackNavigationStyle"
+            android:layout_width="@dimen/back_button_size"
+            android:layout_height="@dimen/back_button_size"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_back_arrow_48" />
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="26dp">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/imgViewTrackImage"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="24dp"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textViewTitle"
-                style="@style/SongTitleTextStyle"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_activity_player"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24sp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imgViewTrackImage"
-                tools:text="Yesterday" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="26dp">
 
-            <TextView
-                android:id="@+id/textViewArtist"
-                style="@style/SongTitleTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24sp"
-                android:layout_marginTop="12dp"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewTitle"
-                tools:text="The Beatles" />
+                <ImageView
+                    android:id="@+id/imgViewTrackImage"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="24dp"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/imBtnAdd"
-                style="@style/ButtonBackNavigationStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="54dp"
-                android:src="@drawable/ic_add_to_playlist"
-                app:layout_constraintEnd_toStartOf="@+id/btnPlayPause"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewArtist" />
+                <TextView
+                    android:id="@+id/textViewTitle"
+                    style="@style/SongTitleTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24sp"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imgViewTrackImage"
+                    tools:text="Yesterday" />
 
-            <ImageButton
-                android:id="@+id/btnPlayPause"
-                style="@style/ButtonBackNavigationStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_play"
-                app:layout_constraintBottom_toBottomOf="@id/imBtnAdd"
-                app:layout_constraintEnd_toStartOf="@+id/imBtnFavorite"
-                app:layout_constraintStart_toEndOf="@+id/imBtnAdd"
-                app:layout_constraintTop_toTopOf="@id/imBtnAdd" />
+                <TextView
+                    android:id="@+id/textViewArtist"
+                    style="@style/SongTitleTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24sp"
+                    android:layout_marginTop="12dp"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+                    tools:text="The Beatles" />
 
-            <ImageButton
-                android:id="@+id/imBtnFavorite"
-                style="@style/ButtonBackNavigationStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:src="@drawable/ic_favorite"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
-                app:layout_constraintTop_toTopOf="@+id/imBtnAdd" />
+                <ImageButton
+                    android:id="@+id/imBtnAddPlaylist"
+                    style="@style/ButtonBackNavigationStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="54dp"
+                    android:src="@drawable/ic_add_to_playlist"
+                    app:layout_constraintEnd_toStartOf="@+id/btnPlayPause"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewArtist" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/buttonGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="imBtnAdd,btnPlayPause, imBtnFavorite" />
+                <ImageButton
+                    android:id="@+id/btnPlayPause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    style="@style/ButtonBackNavigationStyle"
+                    android:src="@drawable/ic_play"
+                    app:layout_constraintBottom_toBottomOf="@id/imBtnAddPlaylist"
+                    app:layout_constraintEnd_toStartOf="@+id/imBtnFavorite"
+                    app:layout_constraintStart_toEndOf="@+id/imBtnAddPlaylist"
+                    app:layout_constraintTop_toTopOf="@id/imBtnAddPlaylist" />
 
-            <TextView
-                android:id="@+id/textViewCurrentTime"
-                style="@style/SongTitleTextStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/_0_00"
-                android:textFontWeight="500"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnPlayPause" />
+                <ImageButton
+                    android:id="@+id/imBtnFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/favorite_shape"
+                    android:src="@drawable/favorite_selector"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
+                    app:layout_constraintTop_toTopOf="@+id/imBtnAddPlaylist" />
 
-            <TextView
-                android:id="@+id/textViewDuration"
-                style="@style/SongArtistSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:text="@string/duration"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewCurrentTime" />
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/buttonGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="imBtnAddPlaylist,btnPlayPause, imBtnFavorite" />
 
-            <TextView
-                android:id="@+id/textViewDurationValue"
-                style="@style/SongNameSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@id/textViewDuration"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewDuration"
-                tools:text="5:35" />
+                <TextView
+                    android:id="@+id/textViewCurrentTime"
+                    style="@style/SongTitleTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/_0_00"
+                    android:textFontWeight="500"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btnPlayPause" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="textViewDuration,textViewDurationValue" />
+                <TextView
+                    android:id="@+id/textViewDuration"
+                    style="@style/SongArtistSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/duration"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewCurrentTime" />
 
-            <TextView
-                android:id="@+id/textViewCollectionName"
-                style="@style/SongArtistSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:text="@string/collection_name"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toStartOf="@+id/textViewCollectionNameValue"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewDuration" />
+                <TextView
+                    android:id="@+id/textViewDurationValue"
+                    style="@style/SongNameSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewDuration"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewDuration"
+                    tools:text="5:35" />
 
-            <TextView
-                android:id="@+id/textViewCollectionNameValue"
-                style="@style/SongNameSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:textSize="13sp"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="@id/textViewCollectionName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textViewCollectionName"
-                app:layout_constraintTop_toTopOf="@id/textViewCollectionName"
-                tools:text="Yesterday (Remastered 2009)" />
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="textViewDuration,textViewDurationValue" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupCollectionName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="textViewCollectionName,textViewCollectionNameValue" />
+                <TextView
+                    android:id="@+id/textViewCollectionName"
+                    style="@style/SongArtistSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/collection_name"
+                    android:textSize="13sp"
+                    app:layout_constraintEnd_toStartOf="@+id/textViewCollectionNameValue"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewDuration" />
 
-            <TextView
-                android:id="@+id/textViewReleaseDate"
-                style="@style/SongArtistSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:text="@string/year"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewCollectionName" />
+                <TextView
+                    android:id="@+id/textViewCollectionNameValue"
+                    style="@style/SongNameSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="13sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewCollectionName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textViewCollectionName"
+                    app:layout_constraintTop_toTopOf="@id/textViewCollectionName"
+                    tools:text="Yesterday (Remastered 2009)" />
 
-            <TextView
-                android:id="@+id/textViewReleaseDateValue"
-                style="@style/SongNameSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@id/textViewReleaseDate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewReleaseDate"
-                tools:text="2009" />
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupCollectionName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="textViewCollectionName,textViewCollectionNameValue" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupReleaseDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="textViewReleaseDate,textViewReleaseDateValue" />
+                <TextView
+                    android:id="@+id/textViewReleaseDate"
+                    style="@style/SongArtistSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/year"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewCollectionName" />
 
-            <TextView
-                android:id="@+id/textViewPrimaryGenreName"
-                style="@style/SongArtistSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:text="@string/genre"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewReleaseDate" />
+                <TextView
+                    android:id="@+id/textViewReleaseDateValue"
+                    style="@style/SongNameSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewReleaseDate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewReleaseDate"
+                    tools:text="2009" />
 
-            <TextView
-                android:id="@+id/textViewPrimaryGenreNameValue"
-                style="@style/SongNameSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@id/textViewPrimaryGenreName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewPrimaryGenreName"
-                tools:text="Rock" />
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupReleaseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="textViewReleaseDate,textViewReleaseDateValue" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupPrimaryGenreName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="textViewPrimaryGenreName,textViewPrimaryGenreNameValue" />
+                <TextView
+                    android:id="@+id/textViewPrimaryGenreName"
+                    style="@style/SongArtistSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/genre"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewReleaseDate" />
 
-            <TextView
-                android:id="@+id/textViewCountry"
-                style="@style/SongArtistSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:text="@string/country"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewPrimaryGenreName" />
+                <TextView
+                    android:id="@+id/textViewPrimaryGenreNameValue"
+                    style="@style/SongNameSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewPrimaryGenreName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewPrimaryGenreName"
+                    tools:text="Rock" />
 
-            <TextView
-                android:id="@+id/textViewCountryValue"
-                style="@style/SongNameSearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="9dp"
-                android:paddingBottom="8dp"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@id/textViewCountry"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewCountry"
-                tools:text="Great Britain" />
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupPrimaryGenreName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="textViewPrimaryGenreName,textViewPrimaryGenreNameValue" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupCountry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="textViewCountry,textViewCountryValue" />
+                <TextView
+                    android:id="@+id/textViewCountry"
+                    style="@style/SongArtistSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/country"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewPrimaryGenreName" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+                <TextView
+                    android:id="@+id/textViewCountryValue"
+                    style="@style/SongNameSearchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewCountry"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewCountry"
+                    tools:text="Great Britain" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupCountry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:constraint_referenced_ids="textViewCountry,textViewCountryValue" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:id="@+id/playlists_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_rounded_bottom_sheet"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="505dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <!-- Вёрстка Bottom Sheet с кнопкой и списком -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_bottom_sheet_rectangle"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center"
+            android:letterSpacing="0"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="28dp"
+            android:text="@string/add_to_playlist"
+            android:textSize="19sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNewPlaylist"
+            style="@style/ButtonUpdateStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:text="@string/new_playlist" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

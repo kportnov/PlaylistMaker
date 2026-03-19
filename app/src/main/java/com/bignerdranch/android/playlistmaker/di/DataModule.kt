@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.bignerdranch.android.playlistmaker.media_library.data.db.AppDatabase
+import com.bignerdranch.android.playlistmaker.media_library.data.db.converters.Converters
 import com.bignerdranch.android.playlistmaker.search.data.NetworkClient
 import com.bignerdranch.android.playlistmaker.search.data.StorageClient
 import com.bignerdranch.android.playlistmaker.search.data.dto.TrackHistoryDto
@@ -73,7 +74,8 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
-        .build()
+            .addTypeConverter(Converters(get()))
+            .build()
     }
 
     factory { MediaPlayer() }

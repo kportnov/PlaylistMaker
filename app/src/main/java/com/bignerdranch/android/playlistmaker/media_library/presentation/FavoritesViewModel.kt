@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesInteractor
-import com.bignerdranch.android.playlistmaker.media_library.ui.FavoritesState
+import com.bignerdranch.android.playlistmaker.media_library.ui.models.FavoritesState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.launch

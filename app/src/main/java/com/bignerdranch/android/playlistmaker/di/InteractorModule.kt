@@ -1,7 +1,9 @@
 package com.bignerdranch.android.playlistmaker.di
 
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesInteractor
+import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsInteractor
 import com.bignerdranch.android.playlistmaker.media_library.domain.impl.FavoritesInteractorImpl
+import com.bignerdranch.android.playlistmaker.media_library.domain.impl.PlaylistsInteractorImpl
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.impl.TracksHistoryInteractorImpl
@@ -32,5 +34,9 @@ val interactorModule = module {
 
     single<FavoritesInteractor>{
         FavoritesInteractorImpl(get())
+    }
+
+    single<PlaylistsInteractor>{
+        PlaylistsInteractorImpl(get())
     }
 }

@@ -5,6 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:textColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavigationViewStyle</item>
+
     </style>
     <style name="Base.Theme.PlaylistMaker.MainScreen" parent="Base.Theme.PlaylistMaker">
 

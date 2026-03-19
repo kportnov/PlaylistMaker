@@ -12,6 +12,11 @@
         android:layout_marginTop="16dp">
     </androidx.recyclerview.widget.RecyclerView>
 
+    <View
+        android:id="@+id/upperSpace"
+        android:layout_width="match_parent"
+        android:layout_height="106dp" />
+
     <include layout="@layout/media_library_empty"
         android:id="@+id/error"/>
 

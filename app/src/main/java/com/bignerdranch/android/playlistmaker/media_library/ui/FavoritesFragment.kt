@@ -13,6 +13,7 @@ import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentFavoritesBinding
 import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.media_library.presentation.FavoritesViewModel
+import com.bignerdranch.android.playlistmaker.media_library.ui.models.FavoritesState
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.ui.TrackAdapter
 import com.bignerdranch.android.playlistmaker.util.debounce
@@ -64,8 +65,8 @@ class FavoritesFragment : Fragment() {
     private fun showEmpty(messageId: Int) {
         context?.let {
             binding.recyclerSearch.visibility = View.GONE
+            binding.upperSpace.visibility = View.VISIBLE
             binding.error.apply {
-                btnNewPlaylist.visibility = View.INVISIBLE
                 imageViewError.visibility = View.VISIBLE
                 textViewMessage.visibility = View.VISIBLE
                 imageViewError.setImageDrawable(
@@ -80,10 +81,11 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun showContent(tracks: List<Track>) {
+
         binding.apply {
+            upperSpace.visibility = View.GONE
             recyclerSearch.visibility = View.VISIBLE
             binding.error.apply {
-                btnNewPlaylist.visibility = View.GONE
                 imageViewError.visibility = View.GONE
                 textViewMessage.visibility = View.GONE
             }
@@ -106,7 +108,7 @@ class FavoritesFragment : Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 500L
 
         fun newInstance() =
             FavoritesFragment().apply {

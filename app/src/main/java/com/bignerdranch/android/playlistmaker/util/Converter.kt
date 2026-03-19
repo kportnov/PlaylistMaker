@@ -2,7 +2,11 @@ package com.bignerdranch.android.playlistmaker.util
 
 import android.content.Context
 import android.util.TypedValue
+import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.PlaylistEntity
 import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.TrackEntity
+import com.bignerdranch.android.playlistmaker.media_library.data.db.entity.TrackInPlaylistEntity
+import com.bignerdranch.android.playlistmaker.media_library.data.dto.PlaylistDto
+import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -44,6 +48,20 @@ object Converter {
             track.previewUrl)
     }
 
+    fun trackToTrackInPlaylistEntity(track: Track): TrackInPlaylistEntity {
+        return TrackInPlaylistEntity(
+            track.id,
+            track.artworkUrl,
+            track.trackName,
+            track.artistName,
+            track.collectionName,
+            track.releaseDate,
+            track.primaryGenreName,
+            track.country,
+            track.trackDuration,
+            track.previewUrl)
+    }
+
     fun entityToTrack(track: TrackEntity): Track {
         return Track(
             trackName = track.trackName,
@@ -58,4 +76,27 @@ object Converter {
             previewUrl = track.previewUrl
         )
     }
+
+    fun playlistDtoToEntity(playlist: PlaylistDto): PlaylistEntity {
+        return PlaylistEntity(
+            playlistId = playlist.playlistId,
+            playlistName = playlist.playlistName,
+            playlistDescription = playlist.playlistDescription,
+            imagePath = playlist.imagePath,
+            tracksIds = playlist.tracksIds,
+            tracksNumber = playlist.tracksNumber
+        )
+    }
+
+    fun entityToPlaylistDto(playlistEntity: PlaylistEntity): Playlist {
+        return Playlist(
+            playlistId = playlistEntity.playlistId,
+            playlistName = playlistEntity.playlistName,
+            playlistDescription = playlistEntity.playlistDescription,
+            imagePath = playlistEntity.imagePath,
+            tracksIds = playlistEntity.tracksIds,
+            tracksNumber = playlistEntity.tracksNumber
+        )
+    }
+
 }

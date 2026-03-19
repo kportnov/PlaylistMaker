@@ -2,7 +2,9 @@ package com.bignerdranch.android.playlistmaker.di
 
 import com.bignerdranch.android.playlistmaker.media_library.presentation.FavoritesViewModel
 import com.bignerdranch.android.playlistmaker.media_library.presentation.PlaylistsViewModel
-import com.bignerdranch.android.playlistmaker.player.ui.PlayerViewModel
+import com.bignerdranch.android.playlistmaker.media_library.presentation.CreatePlaylistViewModel
+import com.bignerdranch.android.playlistmaker.player.presentation.BottomSheetViewModel
+import com.bignerdranch.android.playlistmaker.player.presentation.PlayerViewModel
 import com.bignerdranch.android.playlistmaker.search.ui.SearchViewModel
 import com.bignerdranch.android.playlistmaker.settings.ui.SettingsViewModel
 import org.koin.core.module.dsl.viewModel
@@ -27,6 +29,14 @@ val viewModelModule = module {
     }
 
     viewModel {
-        PlaylistsViewModel()
+        PlaylistsViewModel(get())
+    }
+
+    viewModel {
+        CreatePlaylistViewModel(get())
+    }
+
+    viewModel {
+        BottomSheetViewModel(get(), get())
     }
 }
