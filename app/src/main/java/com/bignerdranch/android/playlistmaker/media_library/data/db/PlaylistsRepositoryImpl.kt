@@ -53,7 +53,7 @@ class PlaylistsRepositoryImpl(
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
 
         val updatedTracksIds = playlist.tracksIds.toMutableList()
-        updatedTracksIds.add(track.id.toInt())
+        updatedTracksIds.add(track.id)
 
         val playlistDto = PlaylistDto(
             playlistId = playlist.playlistId,
