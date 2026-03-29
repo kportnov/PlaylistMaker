@@ -32,8 +32,8 @@ class SearchFragment: Fragment() {
         parametersOf(context)
     }
 
-    private lateinit var adapter: TrackAdapter
-    private lateinit var adapterHistory: TrackAdapter
+    private lateinit var adapter: SearchTrackAdapter
+    private lateinit var adapterHistory: SearchTrackAdapter
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     override fun onCreateView(
@@ -50,12 +50,12 @@ class SearchFragment: Fragment() {
 
         val inputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
-        adapter = TrackAdapter { track ->
+        adapter = SearchTrackAdapter { track ->
             (activity as MainActivity).animateBottomNavigationView()
             onTrackClickDebounce(track)
         }
 
-        adapterHistory = TrackAdapter { track ->
+        adapterHistory = SearchTrackAdapter { track ->
             (activity as MainActivity).animateBottomNavigationView()
             onTrackClickDebounce(track)
         }

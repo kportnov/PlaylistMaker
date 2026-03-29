@@ -3,6 +3,8 @@ package com.bignerdranch.android.playlistmaker.di
 import com.bignerdranch.android.playlistmaker.media_library.presentation.FavoritesViewModel
 import com.bignerdranch.android.playlistmaker.media_library.presentation.PlaylistsViewModel
 import com.bignerdranch.android.playlistmaker.media_library.presentation.CreatePlaylistViewModel
+import com.bignerdranch.android.playlistmaker.media_library.presentation.CurrentPlaylistViewModel
+import com.bignerdranch.android.playlistmaker.media_library.presentation.EditPlaylistViewModel
 import com.bignerdranch.android.playlistmaker.player.presentation.BottomSheetViewModel
 import com.bignerdranch.android.playlistmaker.player.presentation.PlayerViewModel
 import com.bignerdranch.android.playlistmaker.search.ui.SearchViewModel
@@ -38,5 +40,13 @@ val viewModelModule = module {
 
     viewModel {
         BottomSheetViewModel(get(), get())
+    }
+
+    viewModel {
+        CurrentPlaylistViewModel(get(), get(), get(), get())
+    }
+
+    viewModel {
+        EditPlaylistViewModel(get())
     }
 }

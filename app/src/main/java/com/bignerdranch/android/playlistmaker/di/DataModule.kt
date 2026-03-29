@@ -5,6 +5,8 @@ import android.media.MediaPlayer
 import androidx.room.Room
 import com.bignerdranch.android.playlistmaker.media_library.data.db.AppDatabase
 import com.bignerdranch.android.playlistmaker.media_library.data.db.converters.Converters
+import com.bignerdranch.android.playlistmaker.media_library.presentation.formatter.PlaylistShareFormatter
+import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorImpl
 import com.bignerdranch.android.playlistmaker.search.data.NetworkClient
 import com.bignerdranch.android.playlistmaker.search.data.StorageClient
 import com.bignerdranch.android.playlistmaker.search.data.dto.TrackHistoryDto
@@ -65,6 +67,14 @@ val dataModule = module {
         get(),
         get()
         )
+    }
+
+    single {
+        PlaylistShareFormatter(androidContext())
+    }
+
+    single<com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigator> {
+        ExternalNavigatorImpl(androidContext())
     }
 
     //Settings ExternalNavigator

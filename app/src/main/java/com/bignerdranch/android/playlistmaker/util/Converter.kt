@@ -77,6 +77,21 @@ object Converter {
         )
     }
 
+    fun trackInPlaylistEntityToTrack(track: TrackInPlaylistEntity): Track {
+        return Track(
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackDuration =  track.trackDuration,
+            artworkUrl = track.artworkUrl,
+            id = track.trackId,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
+    }
+
     fun playlistDtoToEntity(playlist: PlaylistDto): PlaylistEntity {
         return PlaylistEntity(
             playlistId = playlist.playlistId,
@@ -84,18 +99,26 @@ object Converter {
             playlistDescription = playlist.playlistDescription,
             imagePath = playlist.imagePath,
             tracksIds = playlist.tracksIds,
-            tracksNumber = playlist.tracksNumber
         )
     }
 
-    fun entityToPlaylistDto(playlistEntity: PlaylistEntity): Playlist {
-        return Playlist(
+    fun entityToPlaylistDto(playlistEntity: PlaylistEntity): PlaylistDto {
+        return PlaylistDto(
             playlistId = playlistEntity.playlistId,
             playlistName = playlistEntity.playlistName,
             playlistDescription = playlistEntity.playlistDescription,
             imagePath = playlistEntity.imagePath,
-            tracksIds = playlistEntity.tracksIds,
-            tracksNumber = playlistEntity.tracksNumber
+            tracksIds = playlistEntity.tracksIds
+        )
+    }
+
+    fun playlistDtoToPlaylist(playlistDto: PlaylistDto): Playlist {
+        return Playlist(
+            playlistId = playlistDto.playlistId,
+            playlistName = playlistDto.playlistName,
+            playlistDescription = playlistDto.playlistDescription,
+            imagePath = playlistDto.imagePath,
+            tracksIds = playlistDto.tracksIds
         )
     }
 

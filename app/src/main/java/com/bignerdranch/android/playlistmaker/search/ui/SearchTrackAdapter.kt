@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bignerdranch.android.playlistmaker.R
-import com.bignerdranch.android.playlistmaker.databinding.RecycleSearchCardBinding
+import com.bignerdranch.android.playlistmaker.databinding.RecycleSearchItemBinding
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 
-class TrackAdapter(val clickListener: TrackAdapterClickListener): RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class SearchTrackAdapter(val clickListener: TrackAdapterClickListener): RecyclerView.Adapter<SearchTrackAdapter.TrackViewHolder>() {
 
     var trackList = ArrayList<Track>()
 
@@ -31,7 +31,7 @@ class TrackAdapter(val clickListener: TrackAdapterClickListener): RecyclerView.A
         fun onTrackClick(track: Track)
     }
 
-    class TrackViewHolder(private val binding: RecycleSearchCardBinding) :
+    class TrackViewHolder(private val binding: RecycleSearchItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(track: Track) {
@@ -39,7 +39,7 @@ class TrackAdapter(val clickListener: TrackAdapterClickListener): RecyclerView.A
                 trackName.text = track.trackName
                 trackArtist.text = track.artistName
                 if (track.trackDuration != null) {
-                    trackDuration.text = track.trackDuration
+                    trackDuration.text = Converter.longToMMSS(track.trackDuration.toLong())
                 }
             }
 
@@ -54,7 +54,7 @@ class TrackAdapter(val clickListener: TrackAdapterClickListener): RecyclerView.A
         companion object {
             fun from(parent: ViewGroup): TrackViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
-                val binding = RecycleSearchCardBinding.inflate(inflater, parent, false)
+                val binding = RecycleSearchItemBinding.inflate(inflater, parent, false)
                 return TrackViewHolder(binding)
             }
         }

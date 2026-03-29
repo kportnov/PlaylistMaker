@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker.media_library.ui
+package com.bignerdranch.android.playlistmaker.media_library.ui.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -29,17 +29,22 @@ class PlaylistsViewHolder(view: View): RecyclerView.ViewHolder(view) {
             .transform(CenterCrop(), RoundedCorners(Converter.dpToPx(8f, itemView.context)))
             .into(image)
 
+
         val tracksText = itemView.context.resources.getQuantityString(
             R.plurals.tracks_count,
-            playlist.tracksNumber,
-            playlist.tracksNumber)
+            playlist.tracksIds.size,
+            playlist.tracksIds.size)
 
         title.text = playlist.playlistName
         number.text = tracksText
     }
 }
 
-class PlaylistsAdapter(private val playlists: List<Playlist>): RecyclerView.Adapter<PlaylistsViewHolder>() {
+class PlaylistsAdapter(val clickListener: PlaylistAdapterClickListener): RecyclerView.Adapter<PlaylistsViewHolder>() {
+
+    var playlists = ArrayList<Playlist>()
+
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -52,11 +57,16 @@ class PlaylistsAdapter(private val playlists: List<Playlist>): RecyclerView.Adap
         holder: PlaylistsViewHolder,
         position: Int
     ) {
-       holder.bind(playlists[position])
+        holder.bind(playlists[position])
+        holder.itemView.setOnClickListener { clickListener.onPlaylistClick(playlists[position]) }
     }
 
     override fun getItemCount(): Int {
         return playlists.size
+    }
+
+    fun interface PlaylistAdapterClickListener {
+        fun onPlaylistClick(playlist: Playlist)
     }
 
 }

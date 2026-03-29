@@ -10,26 +10,26 @@ import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playli
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.CreatePlaylistState
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(
-    private val playlistsInteractor: PlaylistsInteractor
+open class CreatePlaylistViewModel(
+    protected val playlistsInteractor: PlaylistsInteractor
     ) : ViewModel() {
 
-    private val _state = MutableLiveData(CreatePlaylistState())
+    protected val _state = MutableLiveData(CreatePlaylistState())
     val observeCreatePlaylistState: LiveData<CreatePlaylistState> = _state
 
-    fun updateTitle(title: String) {
+    open fun updateTitle(title: String) {
         _state.value = _state.value?.copy(title = title)
     }
 
-    fun updateDescription(description: String) {
+    open fun updateDescription(description: String) {
         _state.value = _state.value?.copy(description = description)
     }
 
-    fun updateCover(uri: Uri) {
+    open fun updateCover(uri: Uri) {
         _state.value = _state.value?.copy(coverUri = uri)
     }
 
-    fun createPlaylist() {
+    open fun createPlaylist() {
         viewModelScope.launch {
 
             val imagePath = _state.value?.coverUri?.let { uri ->

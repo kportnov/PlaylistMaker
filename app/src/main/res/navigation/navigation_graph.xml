@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_mediaLibraryFragment_to_createPlaylistFragment"
             app:destination="@id/createPlaylistFragment" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_playlistCurrentFragment"
+            app:destination="@id/currentPlaylistFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -61,4 +64,20 @@
         android:name="com.bignerdranch.android.playlistmaker.media_library.ui.CreatePlaylistFragment"
         android:label="fragment_create_playlist"
         tools:layout="@layout/fragment_create_playlist" />
+    <fragment
+        android:id="@+id/currentPlaylistFragment"
+        android:name="com.bignerdranch.android.playlistmaker.media_library.ui.CurrentPlaylistFragment"
+        android:label="fragment_current_playlist"
+        tools:layout="@layout/fragment_current_playlist" >
+        <action
+            android:id="@+id/action_playlistCurrentFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_currentPlaylistFragment_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPlaylistFragment"
+        android:name="com.bignerdranch.android.playlistmaker.media_library.ui.EditPlaylistFragment"
+        android:label="EditPlaylistFragment" />
 </navigation>

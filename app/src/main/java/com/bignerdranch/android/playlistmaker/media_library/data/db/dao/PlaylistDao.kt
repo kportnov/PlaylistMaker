@@ -1,7 +1,6 @@
 package com.bignerdranch.android.playlistmaker.media_library.data.db.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -14,8 +13,8 @@ interface PlaylistDao {
     @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(playlist: PlaylistEntity)
 
-    @Delete(entity = PlaylistEntity::class)
-    suspend fun deletePlaylist(playlist: PlaylistEntity)
+    @Query("DELETE FROM playlists WHERE playlistId = :playlistId")
+    suspend fun deletePlaylistById(playlistId: Int)
 
     @Update(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlaylist(playlist: PlaylistEntity)
@@ -23,7 +22,7 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlists")
     fun getPlaylists(): Flow<List<PlaylistEntity>>
 
-    @Query("SELECT playlistId FROM playlists")
-    suspend fun getPlaylistsId(): List<Int>
+    @Query("SELECT * FROM playlists WHERE playlistId = :playlistId")
+    suspend fun getPlaylistById(playlistId: Int): PlaylistEntity
 
 }

@@ -7,4 +7,6 @@
     <dimen name="activity_settings_text">16sp</dimen>
     <dimen name="button_size_48">48dp</dimen>
     <dimen name="back_button_size">48dp</dimen>
+    <dimen name="horizontal_margin_current_playlists">16dp</dimen>
+
 </resources>
