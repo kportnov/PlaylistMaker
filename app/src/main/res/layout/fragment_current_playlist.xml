@@ -16,10 +16,10 @@
 
         <ImageButton
             android:id="@+id/button_back"
-            style="@style/ButtonBackNavigationStyle"
             android:layout_width="@dimen/back_button_size"
             android:layout_height="@dimen/back_button_size"
             android:layout_margin="4dp"
+            android:backgroundTint="@android:color/transparent"
             android:src="@drawable/ic_back_arrow_48"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -142,7 +142,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="40dp"
             android:gravity="center"
-            style="@style/TextViewCurrentPlaylistDesc"
+            style="@style/TextViewNoTracksToShare"
             android:text="@string/no_tracks_in_current_playlist"
             />
 
