@@ -106,8 +106,8 @@ class PlayerFragment: Fragment() {
             bottomSheetViewModel.addTrackToPlaylist(playlist)
         }
 
-        binding.recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recycler.adapter = adapterBottomSheet
+        binding.recyclerTracks.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerTracks.adapter = adapterBottomSheet
 
         binding.btnNewPlaylist.setOnClickListener {
             findNavController().navigate(R.id.action_playerFragment_to_createPlaylistFragment)
@@ -125,7 +125,8 @@ class PlayerFragment: Fragment() {
             textViewArtist.text = track?.artistName
             textViewPrimaryGenreNameValue.text = track?.primaryGenreName
             textViewCountryValue.text = track?.country
-            setValueToTextView(textViewDurationValue, groupDuration, track?.trackDuration)
+            setValueToTextView(textViewDurationValue, groupDuration,
+                Converter.longToMMSS(track?.trackDuration?.toLong() ?: 0))
             setValueToTextView(textViewCollectionNameValue, groupCollectionName, track?.collectionName)
             setValueToTextView(textViewReleaseDateValue, groupReleaseDate, track?.releaseDate)
             setFavoriteIcon(track?.isFavorite)

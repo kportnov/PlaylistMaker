@@ -27,7 +27,7 @@ class BottomSheetViewModel(
             val history = tracksHistoryInteractor.getHistory().firstOrNull()
             val track = history?.firstOrNull()
             if (track != null) {
-                if (playlist.tracksIds.contains(track.id.toInt())) {
+                if (playlist.tracksIds.contains(track.id)) {
                     playlistLiveData.postValue(
                         PlaylistsUiState.AddTrackStatus(AddTrackState.AlreadyExists(playlist))
                     )

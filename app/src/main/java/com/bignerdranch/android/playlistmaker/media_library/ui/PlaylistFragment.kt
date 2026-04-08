@@ -13,6 +13,7 @@ import com.bignerdranch.android.playlistmaker.databinding.FragmentPlaylistBindin
 import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
 import com.bignerdranch.android.playlistmaker.media_library.presentation.PlaylistsViewModel
+import com.bignerdranch.android.playlistmaker.media_library.ui.adapter.PlaylistsAdapter
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.PlaylistsState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -20,6 +21,7 @@ class PlaylistFragment : Fragment() {
 
     private lateinit var binding: FragmentPlaylistBinding
     private val viewModel by viewModel<PlaylistsViewModel>()
+    private lateinit var playlistsAdapter: PlaylistsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +33,18 @@ class PlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        playlistsAdapter = PlaylistsAdapter { playlist ->
+            val bundle = Bundle().apply {
+                putInt(PLAYLIST_ID, playlist.playlistId)
+            }
+            (activity as MainActivity).animateBottomNavigationView()
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_playlistCurrentFragment,
+                bundle
+            )
+        }
+        binding.recyclerView.adapter = playlistsAdapter
 
         viewModel.getPlaylists()
 
@@ -65,10 +79,12 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun showPlaylists(playlists: List<Playlist>) {
+        playlistsAdapter.playlists.clear()
+        playlistsAdapter.playlists.addAll(playlists)
+        playlistsAdapter.notifyDataSetChanged()
+
         binding.error.viewGroupError.visibility = View.GONE
         binding.recyclerView.visibility = View.VISIBLE
-        binding.recyclerView.adapter = PlaylistsAdapter(playlists)
-        binding.recyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun render(state: PlaylistsState) {
@@ -79,6 +95,8 @@ class PlaylistFragment : Fragment() {
     }
 
     companion object {
+        const val PLAYLIST_ID = "PLAYLIST_ID"
+
         @JvmStatic
         fun newInstance() =
             PlaylistFragment().apply {

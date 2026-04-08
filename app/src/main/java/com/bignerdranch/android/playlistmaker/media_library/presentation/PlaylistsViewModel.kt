@@ -1,5 +1,6 @@
 package com.bignerdranch.android.playlistmaker.media_library.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,8 @@ class PlaylistsViewModel(
         if (playlists.isNullOrEmpty()) {
             renderState(PlaylistsState.Empty)
         } else {
+            val ids = playlists.map { it.playlistId }.joinToString(", ")
+            Log.i("MYTEST", "Playlists ids $ids")
             renderState(PlaylistsState.Content(playlists))
         }
     }

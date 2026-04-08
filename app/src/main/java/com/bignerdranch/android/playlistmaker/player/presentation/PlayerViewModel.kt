@@ -6,9 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesInteractor
-import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsInteractor
-import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
-import com.bignerdranch.android.playlistmaker.player.ui.model.AddTrackState
 import com.bignerdranch.android.playlistmaker.player.ui.model.PlayerState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.util.Converter
@@ -127,8 +124,8 @@ class PlayerViewModel(
                 playerStateLiveData.value = when (val state = playerStateLiveData.value) {
                     is PlayerState.Default -> PlayerState.Default(updatedTrack)
                     is PlayerState.Prepared -> PlayerState.Prepared(updatedTrack)
-                    is PlayerState.Playing -> PlayerState.Playing(updatedTrack, state.progress)
-                    is PlayerState.Paused -> PlayerState.Paused(updatedTrack, state.progress)
+                    is PlayerState.Playing -> PlayerState.Playing(updatedTrack, Converter.longToMMSS(state.progress.toLong()))
+                    is PlayerState.Paused -> PlayerState.Paused(updatedTrack, Converter.longToMMSS(state.progress.toLong()))
                     else -> state
                 }
             }

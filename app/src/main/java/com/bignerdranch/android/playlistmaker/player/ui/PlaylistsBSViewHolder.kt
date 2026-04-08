@@ -31,8 +31,8 @@ class PlaylistsBSViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         val tracksText = itemView.context.resources.getQuantityString(
             R.plurals.tracks_count,
-            playlist.tracksNumber,
-            playlist.tracksNumber)
+            playlist.tracksIds.size,
+            playlist.tracksIds.size)
 
         title.text = playlist.playlistName
         number.text = tracksText

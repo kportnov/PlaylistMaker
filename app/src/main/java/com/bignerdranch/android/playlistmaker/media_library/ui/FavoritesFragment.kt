@@ -15,7 +15,7 @@ import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.media_library.presentation.FavoritesViewModel
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.FavoritesState
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
-import com.bignerdranch.android.playlistmaker.search.ui.TrackAdapter
+import com.bignerdranch.android.playlistmaker.search.ui.SearchTrackAdapter
 import com.bignerdranch.android.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
@@ -24,7 +24,7 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var binding: FragmentFavoritesBinding
     private val viewModel: FavoritesViewModel by viewModel()
-    private lateinit var adapter: TrackAdapter
+    private lateinit var adapter: SearchTrackAdapter
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     override fun onCreateView(
@@ -38,7 +38,7 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter { track ->
+        adapter = SearchTrackAdapter { track ->
             (activity as MainActivity).animateBottomNavigationView()
             onTrackClickDebounce(track)
         }

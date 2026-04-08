@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.addCallback
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doOnTextChanged
@@ -22,13 +22,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
-class CreatePlaylistFragment: Fragment() {
+open class CreatePlaylistFragment: Fragment() {
 
 
-    private lateinit var binding: FragmentCreatePlaylistBinding
-    private val viewModel by viewModel<CreatePlaylistViewModel>()
-
-    lateinit var confirmDialog: MaterialAlertDialogBuilder
+    protected lateinit var binding: FragmentCreatePlaylistBinding
+    protected open val viewModel by viewModel<CreatePlaylistViewModel>()
+    protected lateinit var confirmDialog: MaterialAlertDialogBuilder
+    protected lateinit var backCallback: OnBackPressedCallback
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +75,10 @@ class CreatePlaylistFragment: Fragment() {
             viewModel.updateTitle(value)
         }
         binding.editTextDescription.doOnTextChanged { text, _, _, _ ->
-            viewModel.updateDescription(text.toString())
+            val value = text?.toString()?.trim().orEmpty()
+            if (value != viewModel.observeCreatePlaylistState.value?.description) {
+                viewModel.updateDescription(value)
+            }
         }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
@@ -87,21 +90,25 @@ class CreatePlaylistFragment: Fragment() {
                 findNavController().popBackStack()
             }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            val isImageLoaded = binding.imgViewTrackImage.getTag(R.id.tag_image_loaded) == true
+        backCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val isImageLoaded = binding.imgViewTrackImage.getTag(R.id.tag_image_loaded) == true
 
-            val dialogIsShown =
-                isImageLoaded ||
-                        !binding.editTextName.text.isNullOrEmpty() ||
-                        !binding.editTextDescription.text.isNullOrEmpty()
+                val dialogIsShown =
+                    isImageLoaded ||
+                            !binding.editTextName.text.isNullOrEmpty() ||
+                            !binding.editTextDescription.text.isNullOrEmpty()
 
-            if (dialogIsShown) {
-                confirmDialog.show()
-            } else {
-                isEnabled = false
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                if (dialogIsShown) {
+                    confirmDialog.show()
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backCallback)
 
         binding.btnCreate.setOnClickListener {
             viewModel.createPlaylist()
@@ -119,14 +126,5 @@ class CreatePlaylistFragment: Fragment() {
         binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            CreatePlaylistFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }

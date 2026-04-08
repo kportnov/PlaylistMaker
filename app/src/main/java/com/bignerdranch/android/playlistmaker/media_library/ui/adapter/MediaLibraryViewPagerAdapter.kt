@@ -1,9 +1,11 @@
-package com.bignerdranch.android.playlistmaker.media_library.ui
+package com.bignerdranch.android.playlistmaker.media_library.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.bignerdranch.android.playlistmaker.media_library.ui.FavoritesFragment
+import com.bignerdranch.android.playlistmaker.media_library.ui.PlaylistFragment
 
 class MediaLibraryViewPagerAdapter(
     fragmentManager: FragmentManager,

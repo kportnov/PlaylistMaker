@@ -28,7 +28,7 @@ class TracksRepositoryImpl(
                         Track(
                             it.trackName,
                             it.artistName,
-                            Converter.longToMMSS(it.trackDuration?.toLong() ?: 0),
+                            it.trackDuration ?: "0",
                             it.artworkUrl,
                             it.trackId,
                             it.collectionName,
