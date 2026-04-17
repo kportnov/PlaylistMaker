@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "747884090541",
+    "project_id": "example-779fe",
+    "storage_bucket": "example-779fe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747884090541:android:a09325cd983b05e6aae224",
+        "android_client_info": {
+          "package_name": "com.bignerdranch.android.playlistmaker.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApsgKZx_U6ee9LZ7v-qGDRdxW_9ml_EIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747884090541:android:a62c7ddad41535b7aae224",
+        "android_client_info": {
+          "package_name": "com.example.firebaseexample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApsgKZx_U6ee9LZ7v-qGDRdxW_9ml_EIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

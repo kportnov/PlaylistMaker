@@ -79,13 +79,26 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewArtist" />
 
-                <ImageButton
+<!--                <ImageButton
                     android:id="@+id/btnPlayPause"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     style="@style/ButtonBackNavigationStyle"
                     android:src="@drawable/ic_play"
+                    app:layout_constraintBottom_toBottomOf="@id/imBtnAddPlaylist"
+                    app:layout_constraintEnd_toStartOf="@+id/imBtnFavorite"
+                    app:layout_constraintStart_toEndOf="@+id/imBtnAddPlaylist"
+                    app:layout_constraintTop_toTopOf="@id/imBtnAddPlaylist" />-->
+
+                <com.bignerdranch.android.playlistmaker.player.ui.PlaybackButtonView
+                    android:id="@+id/btnPlayPauseCustom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    style="@style/ButtonBackNavigationStyle"
+                    app:imagePlayResId="@drawable/ic_play"
+                    app:imagePauseResId="@drawable/ic_pause"
                     app:layout_constraintBottom_toBottomOf="@id/imBtnAddPlaylist"
                     app:layout_constraintEnd_toStartOf="@+id/imBtnFavorite"
                     app:layout_constraintStart_toEndOf="@+id/imBtnAddPlaylist"

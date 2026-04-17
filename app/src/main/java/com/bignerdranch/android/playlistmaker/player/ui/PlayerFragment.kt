@@ -51,9 +51,13 @@ class PlayerFragment: Fragment() {
 
         playerViewModel.observePlayerState().observe(viewLifecycleOwner) { state ->
             setTrackData(state.track)
-            binding.btnPlayPause.apply {
+//            binding.btnPlayPause.apply {
+//                isEnabled = state.isPlayButtonEnabled
+//                setImageDrawable(AppCompatResources.getDrawable(context,state.buttonImageId))
+//            }
+            binding.btnPlayPauseCustom.apply {
                 isEnabled = state.isPlayButtonEnabled
-                setImageDrawable(AppCompatResources.getDrawable(context,state.buttonImageId))
+                setPlaying(state.isPlaying)
             }
             binding.textViewCurrentTime.text = state.progress
             setFavoriteIcon(state.track?.isFavorite)
@@ -65,7 +69,10 @@ class PlayerFragment: Fragment() {
             renderPlaylistState(state)
         }
 
-        binding.btnPlayPause.setOnClickListener { playerViewModel.onPlayButtonClicked() }
+//        binding.btnPlayPause.setOnClickListener { playerViewModel.onPlayButtonClicked() }
+
+        binding.btnPlayPauseCustom.setOnClickListener { playerViewModel.onPlayButtonClicked() }
+
 
         binding.imBtnFavorite.setOnClickListener {
             playerViewModel.onFavoriteClicked()
