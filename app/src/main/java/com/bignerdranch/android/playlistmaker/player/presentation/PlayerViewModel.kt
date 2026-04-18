@@ -110,9 +110,9 @@ class PlayerViewModel(
     }
 
     fun onFavoriteClicked() {
+        val state = playerStateLiveData.value ?: return
         viewModelScope.launch {
-            val track = playerStateLiveData.value?.track
-
+            val track = state.track
             if (track != null) {
                 val updatedTrack = track.copy(isFavorite = !track.isFavorite)
                 if (updatedTrack.isFavorite) {
@@ -121,11 +121,11 @@ class PlayerViewModel(
                     favoritesInteractor.deleteFromFavorites(updatedTrack)
                 }
 
-                playerStateLiveData.value = when (val state = playerStateLiveData.value) {
+                playerStateLiveData.value = when (state) {
                     is PlayerState.Default -> PlayerState.Default(updatedTrack)
                     is PlayerState.Prepared -> PlayerState.Prepared(updatedTrack)
-                    is PlayerState.Playing -> PlayerState.Playing(updatedTrack, Converter.longToMMSS(state.progress.toLong()))
-                    is PlayerState.Paused -> PlayerState.Paused(updatedTrack, Converter.longToMMSS(state.progress.toLong()))
+                    is PlayerState.Playing -> PlayerState.Playing(updatedTrack, state.progress)
+                    is PlayerState.Paused -> PlayerState.Paused(updatedTrack, state.progress)
                     else -> state
                 }
             }

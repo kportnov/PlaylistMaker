@@ -25,7 +25,8 @@ import kotlin.getValue
 open class CreatePlaylistFragment: Fragment() {
 
 
-    protected lateinit var binding: FragmentCreatePlaylistBinding
+    protected var _binding: FragmentCreatePlaylistBinding? = null
+    protected val binding get() = _binding!!
     protected open val viewModel by viewModel<CreatePlaylistViewModel>()
     protected lateinit var confirmDialog: MaterialAlertDialogBuilder
     protected lateinit var backCallback: OnBackPressedCallback
@@ -34,7 +35,7 @@ open class CreatePlaylistFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCreatePlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentCreatePlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -126,5 +127,10 @@ open class CreatePlaylistFragment: Fragment() {
         binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

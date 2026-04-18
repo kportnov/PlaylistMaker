@@ -30,7 +30,8 @@ import kotlin.getValue
 
 class PlayerFragment: Fragment() {
 
-    private lateinit var binding: FragmentPlayerBinding
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
     private val playerViewModel: PlayerViewModel by viewModel()
     private val bottomSheetViewModel: BottomSheetViewModel by viewModel()
     private lateinit var adapterBottomSheet: PlaylistsBSAdapter
@@ -42,7 +43,7 @@ class PlayerFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -51,11 +52,8 @@ class PlayerFragment: Fragment() {
 
         playerViewModel.observePlayerState().observe(viewLifecycleOwner) { state ->
             setTrackData(state.track)
-//            binding.btnPlayPause.apply {
-//                isEnabled = state.isPlayButtonEnabled
-//                setImageDrawable(AppCompatResources.getDrawable(context,state.buttonImageId))
-//            }
-            binding.btnPlayPauseCustom.apply {
+
+            binding.btnPlayPause.apply {
                 isEnabled = state.isPlayButtonEnabled
                 setPlaying(state.isPlaying)
             }
@@ -69,10 +67,9 @@ class PlayerFragment: Fragment() {
             renderPlaylistState(state)
         }
 
-//        binding.btnPlayPause.setOnClickListener { playerViewModel.onPlayButtonClicked() }
-
-        binding.btnPlayPauseCustom.setOnClickListener { playerViewModel.onPlayButtonClicked() }
-
+        binding.btnPlayPause.onClick = {
+            playerViewModel.onPlayButtonClicked()
+        }
 
         binding.imBtnFavorite.setOnClickListener {
             playerViewModel.onFavoriteClicked()
@@ -184,5 +181,10 @@ class PlayerFragment: Fragment() {
                 Toast.makeText(requireContext(), "Добавлено в плейлист ${status.state.playlist.playlistName}", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

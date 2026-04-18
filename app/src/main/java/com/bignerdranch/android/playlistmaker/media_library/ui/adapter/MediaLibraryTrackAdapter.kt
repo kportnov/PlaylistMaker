@@ -13,7 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 class MediaLibraryTrackAdapter(val clickListener: MediaLibraryTrackAdapterClickListener):
     RecyclerView.Adapter<MediaLibraryTrackAdapter.MediaLibraryTrackViewHolder>() {
 
-    var trackList = ArrayList<Track>()
+    var trackList = mutableListOf<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaLibraryTrackViewHolder =
         MediaLibraryTrackViewHolder.from(parent)

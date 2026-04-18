@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.bignerdranch.android.playlistmaker.R
 
-class ExternalNavigatorImpl(private val context: Context)
-    : ExternalNavigator{
+class ExternalNavigatorShareImpl(private val context: Context)
+    : ExternalNavigatorShare{
 
 
     override fun sharePlaylist(text: String) {

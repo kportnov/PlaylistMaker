@@ -22,7 +22,8 @@ import kotlin.getValue
 
 class FavoritesFragment : Fragment() {
 
-    private lateinit var binding: FragmentFavoritesBinding
+    private var _binding: FragmentFavoritesBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: FavoritesViewModel by viewModel()
     private lateinit var adapter: SearchTrackAdapter
     private lateinit var onTrackClickDebounce: (Track) -> Unit
@@ -31,7 +32,7 @@ class FavoritesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
     }
 

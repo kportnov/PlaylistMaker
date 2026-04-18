@@ -8,7 +8,8 @@ import com.bignerdranch.android.playlistmaker.media_library.data.analytics.Fireb
 import com.bignerdranch.android.playlistmaker.media_library.data.db.AppDatabase
 import com.bignerdranch.android.playlistmaker.media_library.data.db.converters.Converters
 import com.bignerdranch.android.playlistmaker.media_library.presentation.formatter.PlaylistShareFormatter
-import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorImpl
+import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorShare
+import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorShareImpl
 import com.bignerdranch.android.playlistmaker.search.data.NetworkClient
 import com.bignerdranch.android.playlistmaker.search.data.StorageClient
 import com.bignerdranch.android.playlistmaker.search.data.dto.TrackHistoryDto
@@ -76,8 +77,8 @@ val dataModule = module {
         PlaylistShareFormatter(androidContext())
     }
 
-    single<com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigator> {
-        ExternalNavigatorImpl(androidContext())
+    single<ExternalNavigatorShare> {
+        ExternalNavigatorShareImpl(androidContext())
     }
 
     //Settings ExternalNavigator

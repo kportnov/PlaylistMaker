@@ -26,8 +26,8 @@ import kotlin.toString
 
 class SearchFragment: Fragment() {
 
-    private lateinit var binding: FragmentSearchBinding
-
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: SearchViewModel by viewModel {
         parametersOf(context)
     }
@@ -41,7 +41,7 @@ class SearchFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -202,6 +202,11 @@ class SearchFragment: Fragment() {
             is SearchState.Error -> showConnectionError(state.errorMessageId)
             is SearchState.Empty -> showEmpty(state.messageId)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

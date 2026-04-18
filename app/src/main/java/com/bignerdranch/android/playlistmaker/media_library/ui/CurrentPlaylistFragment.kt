@@ -35,7 +35,9 @@ class CurrentPlaylistFragment: Fragment() {
     private val playlistID: Int by lazy {
         arguments?.getInt(PLAYLIST_ID) ?: 0
     }
-    private lateinit var binding: FragmentCurrentPlaylistBinding
+    private var _binding: FragmentCurrentPlaylistBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModel<CurrentPlaylistViewModel>()
     private lateinit var bottomSheetBehaviorTracks: BottomSheetBehavior<LinearLayout>
     private lateinit var bottomSheetBehaviorMenu: BottomSheetBehavior<LinearLayout>
@@ -50,7 +52,7 @@ class CurrentPlaylistFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCurrentPlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentCurrentPlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -212,6 +214,11 @@ class CurrentPlaylistFragment: Fragment() {
                 .show()
         }
         bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

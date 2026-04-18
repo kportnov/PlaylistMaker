@@ -9,4 +9,5 @@
     <color name="YP_text_gray">#AEAFB4</color>
     <color name="YP_blue_solid">#FF3772E7</color> <!-- FF = 100% непрозрачность -->
     <color name="YP_text_gray_solid">#FFAEAFB4</color> <!-- FF = 100% непрозрачность -->
+    <color name="play_pause_icon_tint">@color/YP_black</color>
 </resources>
