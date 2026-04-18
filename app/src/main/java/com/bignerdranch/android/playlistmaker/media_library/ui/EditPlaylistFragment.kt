@@ -27,15 +27,15 @@ class EditPlaylistFragment : CreatePlaylistFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCreatePlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentCreatePlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.twNewPlaylistTitle.text = "Редактировать плейлист"
-        binding.btnCreate.text = "Сохранить"
+        binding.twNewPlaylistTitle.text = getString(R.string.edit_playlist)
+        binding.btnCreate.text = getString(R.string.save)
 
         backCallback.remove()
 
@@ -49,7 +49,7 @@ class EditPlaylistFragment : CreatePlaylistFragment() {
             viewModel.editPlaylist(playlistID)
             Toast.makeText(
                 requireContext(),
-                "Плейлист изменен",
+                getString(R.string.playlist_has_been_changed),
                 Toast.LENGTH_LONG)
                 .show()
             findNavController().popBackStack()

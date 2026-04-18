@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsInteractor
 import com.bignerdranch.android.playlistmaker.media_library.presentation.formatter.PlaylistShareFormatter
-import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigator
+import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorShare
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.PlaylistCurrentState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class CurrentPlaylistViewModel(
     private val playlistsInteractor: PlaylistsInteractor,
     private val tracksHistoryInteractor: TracksHistoryInteractor,
-    private val externalNavigator: ExternalNavigator,
+    private val externalNavigatorShare: ExternalNavigatorShare,
     private val playlistShareFormatter: PlaylistShareFormatter
 ) : ViewModel() {
 
@@ -74,7 +74,7 @@ class CurrentPlaylistViewModel(
                 .first()
 
             val message = playlistShareFormatter.format(playlist, tracks)
-            externalNavigator.sharePlaylist(message)
+            externalNavigatorShare.sharePlaylist(message)
         }
     }
 
