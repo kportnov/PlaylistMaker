@@ -15,7 +15,6 @@ import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.bignerdranch.android.playlistmaker.R
-import kotlin.math.min
 
 
 class PlaybackButtonView @JvmOverloads constructor(
@@ -28,8 +27,11 @@ class PlaybackButtonView @JvmOverloads constructor(
     var onClick: (() -> Unit)? = null
     private val imagePlayBitmap: Bitmap?
     private val imagePauseBitmap: Bitmap?
-
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var colorFilter = PorterDuffColorFilter(
+        getTintColor(),
+        PorterDuff.Mode.SRC_IN
+    )
     private var isPlaying = false
 
     private var imageRect = RectF(0f, 0f, 0f, 0f)
@@ -71,7 +73,7 @@ class PlaybackButtonView @JvmOverloads constructor(
                 if (event.x in 0f..width.toFloat() &&
                     event.y in 0f..height.toFloat()
                 ) {
-                    onClick?.invoke()
+                    performClick()
                 }
 
                 invalidate()
@@ -101,19 +103,33 @@ class PlaybackButtonView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         val bitmap = if (isPlaying) imagePauseBitmap else imagePlayBitmap
 
-        // for night theme
-        paint.colorFilter = PorterDuffColorFilter(
-            getTintColor(),
-            PorterDuff.Mode.SRC_IN
-        )
+        paint.colorFilter = colorFilter
 
         bitmap?.let {
             canvas.drawBitmap(it, null, imageRect, paint)
         }
     }
 
+    override fun performClick(): Boolean {
+        super.performClick()
+        onClick?.invoke()
+        return true
+    }
+
     private fun getTintColor(): Int {
         return ContextCompat.getColor(context, R.color.play_pause_icon_tint)
+    }
+
+    private fun updateTint() {
+        colorFilter = PorterDuffColorFilter(
+            getTintColor(),
+            PorterDuff.Mode.SRC_IN
+        )
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        updateTint()
     }
 
     fun setPlaying(isPlaying: Boolean) {
