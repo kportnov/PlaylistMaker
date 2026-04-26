@@ -3,10 +3,13 @@ package com.bignerdranch.android.playlistmaker.di
 import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
+import com.bignerdranch.android.playlistmaker.media_library.data.analytics.Analytics
+import com.bignerdranch.android.playlistmaker.media_library.data.analytics.FirebaseAnalyticsImpl
 import com.bignerdranch.android.playlistmaker.media_library.data.db.AppDatabase
 import com.bignerdranch.android.playlistmaker.media_library.data.db.converters.Converters
 import com.bignerdranch.android.playlistmaker.media_library.presentation.formatter.PlaylistShareFormatter
-import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorImpl
+import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorShare
+import com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigatorShareImpl
 import com.bignerdranch.android.playlistmaker.search.data.NetworkClient
 import com.bignerdranch.android.playlistmaker.search.data.StorageClient
 import com.bignerdranch.android.playlistmaker.search.data.dto.TrackHistoryDto
@@ -15,6 +18,7 @@ import com.bignerdranch.android.playlistmaker.search.data.network.RetrofitNetwor
 import com.bignerdranch.android.playlistmaker.search.data.storage.PrefsStorageClient
 import com.bignerdranch.android.playlistmaker.settings.data.ExternalNavigator
 import com.bignerdranch.android.playlistmaker.settings.domain.model.ThemeSettings
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.koin.android.ext.koin.androidContext
@@ -73,8 +77,8 @@ val dataModule = module {
         PlaylistShareFormatter(androidContext())
     }
 
-    single<com.bignerdranch.android.playlistmaker.media_library.presentation.navigator.ExternalNavigator> {
-        ExternalNavigatorImpl(androidContext())
+    single<ExternalNavigatorShare> {
+        ExternalNavigatorShareImpl(androidContext())
     }
 
     //Settings ExternalNavigator
@@ -89,4 +93,12 @@ val dataModule = module {
     }
 
     factory { MediaPlayer() }
+
+    single {
+        FirebaseAnalytics.getInstance(androidContext())
+    }
+
+    single<Analytics> {
+        FirebaseAnalyticsImpl(get())
+    }
 }

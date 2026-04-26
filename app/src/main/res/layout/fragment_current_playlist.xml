@@ -188,7 +188,7 @@
             android:id="@+id/btn_edit_playlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/edit_playlist"
+            android:text="@string/edit_info"
             style="@style/ButtonSettingsActivityStyle">
         </Button>
         <Button
