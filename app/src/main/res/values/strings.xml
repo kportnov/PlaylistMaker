@@ -53,6 +53,9 @@
     <string name="edit_playlist">Редактировать плейлист</string>
     <string name="save">Сохранить</string>
     <string name="playlist_has_been_changed">Плейлист изменен</string>
+    <string name="playerservice">PlayerService</string>
+    <string name="service_for_playing_music">Service for playing music</string>
+    <string name="playlist_maker">Playlist Maker</string>
     <plurals name="tracks_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>

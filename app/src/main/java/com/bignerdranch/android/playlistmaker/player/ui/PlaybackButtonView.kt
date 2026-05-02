@@ -61,15 +61,9 @@ class PlaybackButtonView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
 
-            MotionEvent.ACTION_DOWN -> {
-                isPressed = true
-                invalidate()
-                return true
-            }
+            MotionEvent.ACTION_DOWN -> return true
 
             MotionEvent.ACTION_UP -> {
-                isPressed = false
-
                 if (event.x in 0f..width.toFloat() &&
                     event.y in 0f..height.toFloat()
                 ) {
@@ -80,11 +74,7 @@ class PlaybackButtonView @JvmOverloads constructor(
                 return true
             }
 
-            MotionEvent.ACTION_CANCEL -> {
-                isPressed = false
-                invalidate()
-                return true
-            }
+            MotionEvent.ACTION_CANCEL -> return true
         }
         return super.onTouchEvent(event)
     }
@@ -133,7 +123,9 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     fun setPlaying(isPlaying: Boolean) {
-        this.isPlaying = isPlaying
-        invalidate()
+        if (this.isPlaying != isPlaying) {
+            this.isPlaying = isPlaying
+            invalidate()
+        }
     }
 }
