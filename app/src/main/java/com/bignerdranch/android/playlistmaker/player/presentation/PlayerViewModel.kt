@@ -1,113 +1,96 @@
 package com.bignerdranch.android.playlistmaker.player.presentation
 
-import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesInteractor
 import com.bignerdranch.android.playlistmaker.player.ui.model.PlayerState
-import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
-import com.bignerdranch.android.playlistmaker.util.Converter
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val mediaPlayer: MediaPlayer,
-    private val tracksHistoryInteractor: TracksHistoryInteractor,
     private val favoritesInteractor: FavoritesInteractor,
     ) : ViewModel() {
+
+
+    private var playerJob: Job? = null
+    private var audioPlayerControl: AudioPlayerControl? = null
+    private var notificationControl: NotificationPlayerControl? = null
+    private var isInForeground = true
+    private var permissionNotificationGranted = false
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
-    private var timerJob: Job? = null
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        this.audioPlayerControl = audioPlayerControl
 
-    init {
-        viewModelScope.launch {
-            val history = tracksHistoryInteractor.getHistory().firstOrNull()
-            val track = history?.firstOrNull()
-            playerStateLiveData.value = PlayerState.Default(track)
-            initMediaPlayer()
+        playerJob?.cancel()
+
+        playerJob = viewModelScope.launch {
+            audioPlayerControl.getState().collect {
+                playerStateLiveData.postValue(it)
+                onPlaybackChanged(it)
+            }
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        releasePlayer()
+    fun setNotificationControl(notificationPlayerControl: NotificationPlayerControl) {
+        this.notificationControl = notificationPlayerControl
+    }
+
+    fun removePlayerControl() {
+        playerJob?.cancel()
+        playerJob = null
+
+        audioPlayerControl = null
+        notificationControl = null
+    }
+
+    private fun updateNotificationState(state: PlayerState) {
+
+        if (!permissionNotificationGranted) return
+
+        val shouldShow = state is PlayerState.Playing && !isInForeground
+
+        if (shouldShow) {
+            notificationControl?.showNotification()
+        } else {
+            notificationControl?.hideNotification()
+        }
+    }
+
+
+    // Updates from UI
+    fun onScreenForeground() {
+        isInForeground = true
+        playerStateLiveData.value?.let { updateNotificationState(it) }
+    }
+
+    // Updates from UI
+    fun onScreenBackground() {
+        isInForeground = false
+        playerStateLiveData.value?.let { updateNotificationState(it) }
+    }
+
+    // Updates from PlayerState
+    private fun onPlaybackChanged(state: PlayerState) {
+        updateNotificationState(state)
+    }
+
+    fun grantPermission() {
+        this.permissionNotificationGranted = true
     }
 
     fun onPlayButtonClicked() {
         when(playerStateLiveData.value) {
-            is PlayerState.Playing -> pausePlayer()
-            is PlayerState.Prepared, is PlayerState.Paused -> startPlayer()
-            else -> { }
+            is PlayerState.Playing -> audioPlayerControl?.pausePlayer()
+            is PlayerState.Prepared, is PlayerState.Paused -> audioPlayerControl?.startPlayer()
+            else -> {}
         }
     }
 
-    private fun initMediaPlayer() {
-        val track = playerStateLiveData.value?.track
-        mediaPlayer.setDataSource(track?.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            track?.let {
-                playerStateLiveData.postValue(PlayerState.Prepared(it))
-            }
-        }
-        mediaPlayer.setOnCompletionListener {
-            timerJob?.cancel()
-            track?.let {
-                playerStateLiveData.postValue(PlayerState.Prepared(it))
-            }
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        val track = playerStateLiveData.value?.track
-        track?.let {
-            playerStateLiveData.postValue(PlayerState.Playing(it,getCurrentPlayerPosition()))
-        }
-        startTimer()
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        timerJob?.cancel()
-        val track = playerStateLiveData.value?.track
-        track?.let {
-            playerStateLiveData.postValue(PlayerState.Paused(it,getCurrentPlayerPosition()))
-        }
-    }
-
-    private fun releasePlayer() {
-        mediaPlayer.stop()
-        mediaPlayer.release()
-        playerStateLiveData.value = PlayerState.Default()
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (mediaPlayer.isPlaying) {
-                delay(300L)
-                val track = playerStateLiveData.value?.track
-                track?.let {
-                    playerStateLiveData.postValue(PlayerState.Playing(it,getCurrentPlayerPosition()))
-                }
-            }
-        }
-    }
-
-    fun onPause() {
-        pausePlayer()
-    }
-
-    private fun getCurrentPlayerPosition(): String {
-        return Converter.longToMMSS(mediaPlayer.currentPosition.toLong())
-    }
 
     fun onFavoriteClicked() {
         val state = playerStateLiveData.value ?: return
@@ -126,9 +109,14 @@ class PlayerViewModel(
                     is PlayerState.Prepared -> PlayerState.Prepared(updatedTrack)
                     is PlayerState.Playing -> PlayerState.Playing(updatedTrack, state.progress)
                     is PlayerState.Paused -> PlayerState.Paused(updatedTrack, state.progress)
-                    else -> state
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioPlayerControl = null
+        notificationControl = null
     }
 }

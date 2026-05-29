@@ -1,14 +1,23 @@
 package com.bignerdranch.android.playlistmaker.player.ui
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -18,9 +27,11 @@ import com.bignerdranch.android.playlistmaker.databinding.FragmentPlayerBinding
 import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
 import com.bignerdranch.android.playlistmaker.player.presentation.BottomSheetViewModel
 import com.bignerdranch.android.playlistmaker.player.presentation.PlayerViewModel
+import com.bignerdranch.android.playlistmaker.player.service.PlayerService
 import com.bignerdranch.android.playlistmaker.player.ui.model.AddTrackState
 import com.bignerdranch.android.playlistmaker.player.ui.model.PlaylistsUiState
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
+import com.bignerdranch.android.playlistmaker.util.ConnectivityChangedReceiver
 import com.bignerdranch.android.playlistmaker.util.Converter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -36,6 +47,34 @@ class PlayerFragment: Fragment() {
     private val bottomSheetViewModel: BottomSheetViewModel by viewModel()
     private lateinit var adapterBottomSheet: PlaylistsBSAdapter
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private val connectivityChangedReceiver = ConnectivityChangedReceiver()
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as PlayerService.PlayerServiceBinder
+            playerViewModel.setAudioPlayerControl(binder.getService())
+            playerViewModel.setNotificationControl(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            playerViewModel.removePlayerControl()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+
+            if (isGranted) {
+                playerViewModel.grantPermission()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Can't bind notifications!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
 
     override fun onCreateView(
@@ -50,7 +89,12 @@ class PlayerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
+        bindPlayerService()
+
         playerViewModel.observePlayerState().observe(viewLifecycleOwner) { state ->
+
             setTrackData(state.track)
 
             binding.btnPlayPause.apply {
@@ -118,9 +162,35 @@ class PlayerFragment: Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        playerViewModel.onScreenForeground()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            requireContext(),
+            connectivityChangedReceiver,
+            IntentFilter(ConnectivityChangedReceiver.ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
     override fun onPause() {
         super.onPause()
-        playerViewModel.onPause()
+        requireContext().unregisterReceiver(connectivityChangedReceiver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        playerViewModel.onScreenBackground()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unbindPlayerService()
+        _binding = null
     }
 
     private fun setTrackData(track: Track?) {
@@ -183,8 +253,12 @@ class PlayerFragment: Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun bindPlayerService() {
+        val intent = Intent(requireContext(), PlayerService::class.java)
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindPlayerService() {
+        requireContext().unbindService(serviceConnection)
     }
 }
