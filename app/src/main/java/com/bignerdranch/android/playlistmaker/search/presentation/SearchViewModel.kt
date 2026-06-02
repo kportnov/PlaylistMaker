@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker.search.ui
+package com.bignerdranch.android.playlistmaker.search.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,11 @@ import com.bignerdranch.android.playlistmaker.search.domain.api.TracksInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
 import com.bignerdranch.android.playlistmaker.util.debounce
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.collections.immutable.toImmutableList
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
@@ -19,6 +23,14 @@ class SearchViewModel(
 
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
+
+    private val _text = MutableStateFlow("")
+    val text: StateFlow<String> = _text.asStateFlow()
+
+    fun onTextChanged(newText: String) {
+        _text.value = newText
+    }
+
 
     private var latestSearchText: String? = null
     private val trackSearchDebounce = debounce<String>(
@@ -31,16 +43,18 @@ class SearchViewModel(
 
 
     fun searchDebounce(changedText: String) {
+
         if (latestSearchText == changedText) {
             return
         }
+
         this.latestSearchText = changedText
         trackSearchDebounce(changedText)
     }
 
     fun clearHistory() {
         tracksHistoryInteractor.clearHistory()
-        renderState(SearchState.Content(emptyList()))
+        renderState(SearchState.Content(emptyList<Track>().toImmutableList()))
     }
 
     fun addToHistory(track: Track) {
@@ -72,7 +86,7 @@ class SearchViewModel(
                 SearchState.Empty(R.string.nothing_found)
             )
             else -> renderState(
-                SearchState.Content(tracks)
+                SearchState.Content(tracks.toImmutableList())
             )
         }
     }
@@ -88,9 +102,9 @@ class SearchViewModel(
 
     private fun processHistoryResult(historyList: List<Track>?) {
         if (historyList == null || historyList.isEmpty()) {
-            renderState(SearchState.Content(emptyList()))
+            renderState(SearchState.Content(emptyList<Track>().toImmutableList()))
         } else {
-            renderState(SearchState.History(historyList))
+            renderState(SearchState.History(historyList.toImmutableList()))
         }
     }
 

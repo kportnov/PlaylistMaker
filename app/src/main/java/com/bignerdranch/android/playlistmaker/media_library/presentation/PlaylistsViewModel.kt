@@ -1,6 +1,5 @@
 package com.bignerdranch.android.playlistmaker.media_library.presentation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsInteractor
 import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.PlaylistsState
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
@@ -27,11 +27,9 @@ class PlaylistsViewModel(
 
     private fun processPlaylists(playlists: List<Playlist>?) {
         if (playlists.isNullOrEmpty()) {
-            renderState(PlaylistsState.Empty)
+            renderState(PlaylistsState.Empty(com.bignerdranch.android.playlistmaker.R.string.no_playlist_has_been_created))
         } else {
-            val ids = playlists.map { it.playlistId }.joinToString(", ")
-            Log.i("MYTEST", "Playlists ids $ids")
-            renderState(PlaylistsState.Content(playlists))
+            renderState(PlaylistsState.Content(playlists.toImmutableList()))
         }
     }
 
