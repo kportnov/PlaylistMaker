@@ -4,47 +4,42 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.FragmentNavigator
-import com.bignerdranch.android.playlistmaker.databinding.FragmentSettingsBinding
+import com.bignerdranch.android.playlistmaker.theme.PlaylistMakerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
-class SettingsFragment: Fragment() {
+class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding get() = _binding!!
     private val viewModel: SettingsViewModel by viewModel()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.themeSwitcher.isChecked = viewModel.getTheme() ?: false
-
-        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            viewModel.manageTheme(checked)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                PlaylistMakerTheme {
+                    SettingsScreen(
+                        isDarkTheme = viewModel.getTheme() ?: false,
+                        onThemeClick = {
+                            viewModel.manageTheme(it)
+                        },
+                        onShareClick = {
+                            viewModel.shareApp()
+                        },
+                        onSupportClick = {
+                            viewModel.openSupport()
+                        },
+                        onTermsClick = {
+                            viewModel.openTerms()
+                        }
+                    )
+                }
+            }
         }
-
-        binding.btnShareTheApp.setOnClickListener {
-            viewModel.shareApp()
-        }
-
-        binding.btnSentToSupport.setOnClickListener {
-            viewModel.openSupport()
-        }
-
-        binding.btnUserAgreement.setOnClickListener {
-            viewModel.openTerms()
-        }
-
     }
 }

@@ -7,7 +7,7 @@ import com.bignerdranch.android.playlistmaker.media_library.presentation.Current
 import com.bignerdranch.android.playlistmaker.media_library.presentation.EditPlaylistViewModel
 import com.bignerdranch.android.playlistmaker.player.presentation.BottomSheetViewModel
 import com.bignerdranch.android.playlistmaker.player.presentation.PlayerViewModel
-import com.bignerdranch.android.playlistmaker.search.ui.SearchViewModel
+import com.bignerdranch.android.playlistmaker.search.presentation.SearchViewModel
 import com.bignerdranch.android.playlistmaker.settings.ui.SettingsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

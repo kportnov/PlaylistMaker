@@ -7,7 +7,7 @@
         <item name="android:textColor">@color/YP_black</item>
         <item name="iconTint">@color/YP_black</item>
         <item name="bottomNavigationStyle">@style/BottomNavigationViewStyle</item>
-        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/white</item>
 
     </style>
     <style name="AlertDialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">

@@ -25,7 +25,9 @@ import com.bignerdranch.android.playlistmaker.R
 import com.bignerdranch.android.playlistmaker.databinding.FragmentSearchBinding
 import com.bignerdranch.android.playlistmaker.main.ui.MainActivity
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
+import com.bignerdranch.android.playlistmaker.search.presentation.SearchViewModel
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
+import com.bignerdranch.android.playlistmaker.theme.PlaylistMakerTheme
 import com.bignerdranch.android.playlistmaker.util.ConnectivityChangedReceiver
 import com.bignerdranch.android.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,6 +40,7 @@ class SearchFragment: Fragment() {
         parametersOf(context)
     }
 
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
     private val connectivityChangedReceiver = ConnectivityChangedReceiver()
 
     override fun onCreateView(
@@ -45,49 +48,26 @@ class SearchFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+            viewModel.addToHistory(track)
+            findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
+        }
+
         return ComposeView(requireContext()).apply {
 
             setContent {
+                PlaylistMakerTheme() {
+                    SearchScreen(
+                        viewModel = viewModel,
+                        onTrackClick = { track ->
+                            (activity as MainActivity)
+                                .animateBottomNavigationView()
 
-                val state by viewModel.observeState().observeAsState(SearchState.Loading)
-
-                var searchText by remember { mutableStateOf("") }
-
-                SearchScreen(
-                    state = state,
-
-                    searchText = searchText,
-
-                    onSearchTextChanged = {
-
-                        searchText = it
-
-                        if (searchText.isEmpty()) {
-                            viewModel.getHistory()
-                        } else {
-                            viewModel.searchDebounce(searchText)
+                            onTrackClickDebounce(track)
                         }
-                    },
-
-                    onTrackClick = { track ->
-
-                        viewModel.addToHistory(track)
-
-                        findNavController().navigate(
-                            R.id.action_searchFragment_to_playerFragment
-                        )
-                    },
-
-                    onClearHistoryClick = {
-                        viewModel.clearHistory()
-                    },
-
-                    onUpdateClick = {
-                        viewModel.searchRequest(searchText)
-                    }
-
-
-                )
+                    )
+                }
             }
         }
     }

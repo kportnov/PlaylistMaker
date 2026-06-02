@@ -8,6 +8,8 @@ sealed interface PlaylistsState {
         val playlists: List<Playlist>
     ): PlaylistsState
 
-    object Empty: PlaylistsState
+    data class Empty(
+        val messageId: Int
+    ): PlaylistsState
 
 }

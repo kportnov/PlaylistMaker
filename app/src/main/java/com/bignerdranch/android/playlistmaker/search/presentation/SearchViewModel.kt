@@ -1,4 +1,4 @@
-package com.bignerdranch.android.playlistmaker.search.ui
+package com.bignerdranch.android.playlistmaker.search.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +10,9 @@ import com.bignerdranch.android.playlistmaker.search.domain.api.TracksInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.ui.models.SearchState
 import com.bignerdranch.android.playlistmaker.util.debounce
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -19,6 +22,14 @@ class SearchViewModel(
 
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
+
+    private val _text = MutableStateFlow("")
+    val text: StateFlow<String> = _text.asStateFlow()
+
+    fun onTextChanged(newText: String) {
+        _text.value = newText
+    }
+
 
     private var latestSearchText: String? = null
     private val trackSearchDebounce = debounce<String>(
@@ -31,9 +42,11 @@ class SearchViewModel(
 
 
     fun searchDebounce(changedText: String) {
+
         if (latestSearchText == changedText) {
             return
         }
+
         this.latestSearchText = changedText
         trackSearchDebounce(changedText)
     }
