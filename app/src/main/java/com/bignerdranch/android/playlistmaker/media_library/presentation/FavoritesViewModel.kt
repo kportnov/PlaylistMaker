@@ -9,6 +9,7 @@ import com.bignerdranch.android.playlistmaker.media_library.domain.db.FavoritesI
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.FavoritesState
 import com.bignerdranch.android.playlistmaker.search.domain.api.TracksHistoryInteractor
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
@@ -30,7 +31,7 @@ class FavoritesViewModel(
         if (favoritesList == null || favoritesList.isEmpty()) {
             renderState(FavoritesState.Empty(R.string.media_library_is_empty))
         } else {
-            renderState(FavoritesState.Content(favoritesList))
+            renderState(FavoritesState.Content(favoritesList.toImmutableList()))
         }
     }
 

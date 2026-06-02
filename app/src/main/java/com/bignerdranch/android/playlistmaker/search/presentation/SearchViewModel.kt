@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.collections.immutable.toImmutableList
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
@@ -53,7 +54,7 @@ class SearchViewModel(
 
     fun clearHistory() {
         tracksHistoryInteractor.clearHistory()
-        renderState(SearchState.Content(emptyList()))
+        renderState(SearchState.Content(emptyList<Track>().toImmutableList()))
     }
 
     fun addToHistory(track: Track) {
@@ -85,7 +86,7 @@ class SearchViewModel(
                 SearchState.Empty(R.string.nothing_found)
             )
             else -> renderState(
-                SearchState.Content(tracks)
+                SearchState.Content(tracks.toImmutableList())
             )
         }
     }
@@ -101,9 +102,9 @@ class SearchViewModel(
 
     private fun processHistoryResult(historyList: List<Track>?) {
         if (historyList == null || historyList.isEmpty()) {
-            renderState(SearchState.Content(emptyList()))
+            renderState(SearchState.Content(emptyList<Track>().toImmutableList()))
         } else {
-            renderState(SearchState.History(historyList))
+            renderState(SearchState.History(historyList.toImmutableList()))
         }
     }
 

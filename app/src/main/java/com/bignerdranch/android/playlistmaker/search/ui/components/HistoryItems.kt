@@ -18,11 +18,12 @@ import com.bignerdranch.android.playlistmaker.search.domain.models.Track
 import com.bignerdranch.android.playlistmaker.search.presentation.SearchViewModel
 import com.bignerdranch.android.playlistmaker.theme.ButtonTextStyle
 import com.bignerdranch.android.playlistmaker.theme.TextErrorStyle
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun HistoryItems(
     viewModel: SearchViewModel,
-    tracks: List<Track>,
+    tracks: ImmutableList<Track>,
     onTrackClick: (Track) -> Unit
 ) {
     Column(

@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -72,7 +73,11 @@ fun PlaylistItem(
             )
 
             Text(
-                text = "${playlist.tracksIds.size} треков",
+                text = pluralStringResource(
+                    R.plurals.tracks_count,
+                    playlist.tracksIds.size,
+                    playlist.tracksIds.size
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),

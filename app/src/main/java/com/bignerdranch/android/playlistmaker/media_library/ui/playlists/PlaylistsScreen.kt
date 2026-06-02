@@ -61,7 +61,11 @@ fun PlaylistsScreen(
                         .weight(1f)
                 ) {
 
-                    items(playlistsState.playlists) { playlist ->
+                    items(
+                        items = playlistsState.playlists,
+                        key = { it.playlistId },
+                        contentType = { "playlist" }
+                        ) { playlist ->
 
                         PlaylistItem(
                             playlist = playlist,

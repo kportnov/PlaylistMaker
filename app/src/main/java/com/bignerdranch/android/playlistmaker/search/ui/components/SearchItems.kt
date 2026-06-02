@@ -8,10 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bignerdranch.android.playlistmaker.search.domain.models.Track
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SearchItems(
-    tracks: List<Track>,
+    tracks: ImmutableList<Track>,
     onTrackClick: (Track) -> Unit
 ) {
     LazyColumn(
@@ -19,7 +20,12 @@ fun SearchItems(
             .padding(top = 16.dp)
             .fillMaxSize()
     ) {
-        items(tracks) { track ->
+
+        items(
+            items = tracks,
+            key = { it.id },
+            contentType = { "track" }
+        ) { track ->
             TrackItem(
                 track = track,
                 onClick = { onTrackClick(track) }

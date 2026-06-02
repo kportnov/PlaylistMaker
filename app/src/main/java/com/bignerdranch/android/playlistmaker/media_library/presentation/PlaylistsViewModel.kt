@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.playlistmaker.media_library.domain.db.PlaylistsInteractor
 import com.bignerdranch.android.playlistmaker.media_library.domain.models.Playlist
 import com.bignerdranch.android.playlistmaker.media_library.ui.models.PlaylistsState
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
@@ -28,7 +29,7 @@ class PlaylistsViewModel(
         if (playlists.isNullOrEmpty()) {
             renderState(PlaylistsState.Empty(com.bignerdranch.android.playlistmaker.R.string.no_playlist_has_been_created))
         } else {
-            renderState(PlaylistsState.Content(playlists))
+            renderState(PlaylistsState.Content(playlists.toImmutableList()))
         }
     }
 
